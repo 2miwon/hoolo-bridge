@@ -3,18 +3,16 @@
 //   sqlc v1.27.0
 // source: users.sql
 
-package main
+package db
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO public.users (email, password, username, created_at)
 VALUES ($1, $2, $3, CURRENT_DATE)
-RETURNING id, email, password, username, profile_image_url, created_at, deleted_at
+RETURNING email, password, username, profile_image_url, created_at, deleted_at
 `
 
 type CreateUserParams struct {
@@ -27,7 +25,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	row := q.db.QueryRow(ctx, createUser, arg.Email, arg.Password, arg.Username)
 	var i User
 	err := row.Scan(
-		&i.ID,
 		&i.Email,
 		&i.Password,
 		&i.Username,
@@ -39,7 +36,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUserByEmailAndPassword = `-- name: GetUserByEmailAndPassword :one
-SELECT id, email, password, username, profile_image_url, created_at, deleted_at
+SELECT email, password, username, profile_image_url, created_at, deleted_at
 FROM public.users
 WHERE email = $1 AND password = $2 AND deleted_at IS NULL
 `
@@ -53,7 +50,6 @@ func (q *Queries) GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEm
 	row := q.db.QueryRow(ctx, getUserByEmailAndPassword, arg.Email, arg.Password)
 	var i User
 	err := row.Scan(
-		&i.ID,
 		&i.Email,
 		&i.Password,
 		&i.Username,
@@ -65,16 +61,15 @@ func (q *Queries) GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEm
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, email, password, username, profile_image_url, created_at, deleted_at
+SELECT email, password, username, profile_image_url, created_at, deleted_at
 FROM public.users
-WHERE id = $1 AND deleted_at IS NULL
+WHERE email = $1 AND deleted_at IS NULL
 `
 
-func (q *Queries) GetUserByID(ctx context.Context, id pgtype.UUID) (User, error) {
-	row := q.db.QueryRow(ctx, getUserByID, id)
+func (q *Queries) GetUserByID(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByID, email)
 	var i User
 	err := row.Scan(
-		&i.ID,
 		&i.Email,
 		&i.Password,
 		&i.Username,

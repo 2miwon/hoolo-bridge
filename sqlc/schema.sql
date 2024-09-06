@@ -13,8 +13,7 @@ DROP TABLE IF EXISTS public.session;
 CREATE SCHEMA IF NOT EXISTS public;
 
 CREATE TABLE IF NOT EXISTS public.users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    email TEXT NOT NULL UNIQUE,
+    id TEXT PRIMARY KEY NOT NULL,
     password TEXT NOT NULL,
     username VARCHAR NOT NULL,
     profile_image_url TEXT,
@@ -45,7 +44,7 @@ CREATE TABLE IF NOT EXISTS public.users (
 CREATE TABLE IF NOT EXISTS public.holog (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     place_id INTEGER NOT NULL,
-    creator_id INTEGER NOT NULL,
+    creator_id TEXT NOT NULL,
     type TEXT NOT NULL,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
