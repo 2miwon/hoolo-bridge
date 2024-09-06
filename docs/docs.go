@@ -25,7 +25,7 @@ const docTemplate = `{
     "paths": {
         "/login": {
             "post": {
-                "description": "Register a new user with email, username and password",
+                "description": "Login with email and password",
                 "consumes": [
                     "application/json"
                 ],
@@ -35,23 +35,15 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
+                "summary": "로그인",
                 "parameters": [
                     {
-                        "description": "Email",
-                        "name": "email",
+                        "description": "Login Request",
+                        "name": "LoginRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Password",
-                        "name": "password",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.LoginRequest"
                         }
                     }
                 ],
@@ -63,61 +55,10 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "User already exists",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "description": "Bad Request"
                     },
                     "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/myinfo": {
-            "post": {
-                "description": "Get user info by user ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "parameters": [
-                    {
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/db.User"
-                        }
-                    },
-                    "400": {
-                        "description": "User not found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -134,32 +75,15 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
+                "summary": "회원가입",
                 "parameters": [
                     {
-                        "description": "Email",
-                        "name": "email",
+                        "description": "SignUp Request",
+                        "name": "SignUpRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Username",
-                        "name": "username",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Password",
-                        "name": "password",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.SignUpRequest"
                         }
                     }
                 ],
@@ -171,22 +95,89 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "User already exists",
-                        "schema": {
-                            "type": "string"
-                        }
+                        "description": "Bad Request"
                     },
                     "500": {
-                        "description": "Internal server error",
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/user/myinfo": {
+            "post": {
+                "description": "Get user information by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "내정보 가져오기 (By ID)",
+                "parameters": [
+                    {
+                        "description": "MyInfo Request",
+                        "name": "MyInfoRequest",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.MyInfoRequest"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/db.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 }
             }
         }
     },
     "definitions": {
+        "api.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.MyInfoRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.SignUpRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "db.User": {
             "type": "object",
             "properties": {
@@ -216,8 +207,8 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.1",
-	Host:             "3.36.212.250:3000 // TODO: change to your server's IP",
-	BasePath:         "/docs",
+	Host:             "localhost:3000",
+	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Hoolo API",
 	Description:      "This is a Hoolo swagger docs for Fiber",

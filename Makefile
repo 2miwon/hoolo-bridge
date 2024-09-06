@@ -8,3 +8,9 @@ debug:
 	sqlc generate
 	swag init
 	air
+
+deploy:
+	sqlc generate
+	swag init
+	mkdir -p ./bin
+	go run main.go -deploy

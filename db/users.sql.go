@@ -7,12 +7,14 @@ package db
 
 import (
 	"context"
+
+	null "gopkg.in/guregu/null.v4"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO public.users (id, password, username, created_at)
 VALUES ($1, $2, $3, CURRENT_DATE)
-RETURNING id, password, username, profile_image_url, created_at, deleted_at
+RETURNING id, username
 `
 
 type CreateUserParams struct {
@@ -21,22 +23,20 @@ type CreateUserParams struct {
 	Username string `json:"username"`
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+type CreateUserRow struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error) {
 	row := q.db.QueryRow(ctx, createUser, arg.ID, arg.Password, arg.Username)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Password,
-		&i.Username,
-		&i.ProfileImageUrl,
-		&i.CreatedAt,
-		&i.DeletedAt,
-	)
+	var i CreateUserRow
+	err := row.Scan(&i.ID, &i.Username)
 	return i, err
 }
 
 const getUserByEmailAndPassword = `-- name: GetUserByEmailAndPassword :one
-SELECT id, password, username, profile_image_url, created_at, deleted_at
+SELECT id, username, profile_image_url, created_at
 FROM public.users
 WHERE id = $1 AND password = $2 AND deleted_at IS NULL
 `
@@ -46,36 +46,46 @@ type GetUserByEmailAndPasswordParams struct {
 	Password string `json:"password"`
 }
 
-func (q *Queries) GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEmailAndPasswordParams) (User, error) {
+type GetUserByEmailAndPasswordRow struct {
+	ID              string    `json:"id"`
+	Username        string    `json:"username"`
+	ProfileImageUrl *string   `json:"profile_image_url"`
+	CreatedAt       null.Time `json:"created_at"`
+}
+
+func (q *Queries) GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEmailAndPasswordParams) (GetUserByEmailAndPasswordRow, error) {
 	row := q.db.QueryRow(ctx, getUserByEmailAndPassword, arg.ID, arg.Password)
-	var i User
+	var i GetUserByEmailAndPasswordRow
 	err := row.Scan(
 		&i.ID,
-		&i.Password,
 		&i.Username,
 		&i.ProfileImageUrl,
 		&i.CreatedAt,
-		&i.DeletedAt,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, password, username, profile_image_url, created_at, deleted_at
+SELECT id, username, profile_image_url, created_at
 FROM public.users
 WHERE id = $1 AND deleted_at IS NULL
 `
 
-func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {
+type GetUserByIDRow struct {
+	ID              string    `json:"id"`
+	Username        string    `json:"username"`
+	ProfileImageUrl *string   `json:"profile_image_url"`
+	CreatedAt       null.Time `json:"created_at"`
+}
+
+func (q *Queries) GetUserByID(ctx context.Context, id string) (GetUserByIDRow, error) {
 	row := q.db.QueryRow(ctx, getUserByID, id)
-	var i User
+	var i GetUserByIDRow
 	err := row.Scan(
 		&i.ID,
-		&i.Password,
 		&i.Username,
 		&i.ProfileImageUrl,
 		&i.CreatedAt,
-		&i.DeletedAt,
 	)
 	return i, err
 }

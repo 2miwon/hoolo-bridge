@@ -1,0 +1,5 @@
+[build]
+bin = "bin/hoolo-bridge" # 빌드된 바이너리 파일 경로
+cmd = "swag init && go build -o bin/hoolo-bridge" # Swagger 문서 생성 후 빌드 명령어
+include_ext = ["go", "sql", "tpl", "tmpl", "html"] # 감시할 파일 확장자
+exclude_dir = ["vendor", "bin"] # 감시하지 않을 디렉토리

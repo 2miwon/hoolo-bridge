@@ -2,105 +2,131 @@ package api
 
 import (
 	"context"
+	"log"
 
 	"github.com/2miwon/hoolo-bridge/db"
 	"github.com/2miwon/hoolo-bridge/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
-// @Summary
-// @Description Get user info by user ID
+type MyInfoRequest struct {
+    ID    string `json:"id"`
+}
+
+// @Summary 내정보 가져오기 (By ID)
+// @Description Get user information by ID
 // @Tags users
 // @Accept  json
 // @Produce  json
-// @Param   id    body    string     true        "User ID"
+// @Param   MyInfoRequest  body    MyInfoRequest  true  "MyInfo Request"
 // @Success 200 {object} db.User
-// @Failure 400 {object} string "User not found"
-// @Failure 500 {object} string "Internal server error"
-// @Router /myinfo [post]
-func GetMyInfo(c *fiber.Ctx, q *db.Queries) error {
+// @Failure 404
+// @Failure 400
+// @Router /user/myinfo [post]
+func FetchMyInfo(c *fiber.Ctx, q *db.Queries) error {
     ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
-    type MyInfoRequest struct {
-            ID    string `json:"id"`
-        }
+    var req MyInfoRequest
 
-        var req MyInfoRequest
+    err := utils.ParseRequestBody(c, &req)
+    if err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+            "error": "Invalid request",
+        })
+    }
 
-        err := utils.ParseRequestBody(c, &req)
-        utils.CheckErr(err)
+    user, err := q.GetUserByID(ctx, req.ID)
+    if err != nil {
+        log.Printf("Error fetching user: %v", err)
+        return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+            "error": "User not exist",
+        })
+    }
 
-        user, err := q.GetUserByID(ctx, req.ID)
-        utils.CheckErr(err)
-
-        return c.JSON(user)
+    return c.JSON(user)
 }
 
-// @Summary
+type SignUpRequest struct {
+    ID    string `json:"id"`
+    Password string `json:"password"`
+    Username string `json:"username"`
+}
+
+// @Summary 회원가입
 // @Description Register a new user with email, username and password
 // @Tags users
 // @Accept  json
 // @Produce  json
-// @Param   email     body    string     true        "Email"
-// @Param   username  body    string     true        "Username"
-// @Param   password  body    string     true        "Password"
+// @Param   SignUpRequest  body    SignUpRequest  true  "SignUp Request"
 // @Success 200 {object} db.User
-// @Failure 400 {object} string "User already exists"
-// @Failure 500 {object} string "Internal server error"
+// @Failure 400 
+// @Failure 500
 // @Router /register [post]
 func SignUp(c *fiber.Ctx, q *db.Queries) error {
     ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
-    type SignUpRequest struct {
-            ID    string `json:"id"`
-            Password string `json:"password"`
-            Username string `json:"username"`
-        }
+    var req SignUpRequest
 
-        var req SignUpRequest
-
-        err := utils.ParseRequestBody(c, &req)
-        utils.CheckErr(err)
-
-        user, err := q.CreateUser(ctx, db.CreateUserParams{
-            ID:		req.ID,
-            Password:	req.Password,
-            Username:	req.Username,
+    err := utils.ParseRequestBody(c, &req)
+    if err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+            "error": "Invalid request",
         })
-        utils.CheckErr(err)
+    }
 
-        return c.JSON(user)
+    user, err := q.CreateUser(ctx, db.CreateUserParams{
+        ID:		req.ID,
+        Password:	req.Password,
+        Username:	req.Username,
+    })
+    if err != nil {
+        log.Printf("Error creating user: %v", err)
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "error": "Failed to create user",
+        })
+    }
+
+    return c.JSON(user)
 }
 
-// @Summary
-// @Description Register a new user with email, username and password
+type LoginRequest struct {
+    ID    string `json:"id"`
+    Password string `json:"password"`
+}
+
+// @Summary 로그인
+// @Description Login with email and password
 // @Tags users
 // @Accept  json
 // @Produce  json
-// @Param   email     body    string     true        "Email"
-// @Param   password  body    string     true        "Password"
+// @Param   LoginRequest  body    LoginRequest  true  "Login Request"   
 // @Success 200 {object} db.User
-// @Failure 400 {object} string "User already exists"
-// @Failure 500 {object} string "Internal server error"
+// @Failure 400
+// @Failure 500
 // @Router /login [post]
 func Login(c *fiber.Ctx, q *db.Queries) error {
     ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
-	type LoginRequest struct {
-            ID    string `json:"id"`
-            Password string `json:"password"`
-        }
+	var req LoginRequest
 
-		var req LoginRequest
+	err := utils.ParseRequestBody(c, &req)
+	if err != nil {
+        log.Printf("Error parsing request body: %v", err)
 
-		err := utils.ParseRequestBody(c, &req)
-		utils.CheckErr(err)
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+            "error": "Invalid request",
+        })
+    }
 
-		user, err := q.GetUserByEmailAndPassword(ctx, db.GetUserByEmailAndPasswordParams{
-			ID:		req.ID,
-			Password:	req.Password,
-		})
-		utils.CheckErr(err)
+	user, err := q.GetUserByEmailAndPassword(ctx, db.GetUserByEmailAndPasswordParams{
+		ID:		req.ID,
+		Password:	req.Password,
+	})
+	if err != nil {
+        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+            "error": "Invalid ID or Password",
+        })
+    }
 
-		return c.JSON(user)
+	return c.JSON(user)
 }

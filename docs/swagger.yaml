@@ -1,5 +1,26 @@
-basePath: /docs
+basePath: /
 definitions:
+  api.LoginRequest:
+    properties:
+      id:
+        type: string
+      password:
+        type: string
+    type: object
+  api.MyInfoRequest:
+    properties:
+      id:
+        type: string
+    type: object
+  api.SignUpRequest:
+    properties:
+      id:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   db.User:
     properties:
       created_at:
@@ -15,7 +36,7 @@ definitions:
       username:
         type: string
     type: object
-host: '3.36.212.250:3000 // TODO: change to your server''s IP'
+host: localhost:3000
 info:
   contact:
     email: zhengsfsf@gmail.com
@@ -32,20 +53,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: Register a new user with email, username and password
+      description: Login with email and password
       parameters:
-      - description: Email
+      - description: Login Request
         in: body
-        name: email
+        name: LoginRequest
         required: true
         schema:
-          type: string
-      - description: Password
-        in: body
-        name: password
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/api.LoginRequest'
       produces:
       - application/json
       responses:
@@ -54,42 +69,10 @@ paths:
           schema:
             $ref: '#/definitions/db.User'
         "400":
-          description: User already exists
-          schema:
-            type: string
+          description: Bad Request
         "500":
-          description: Internal server error
-          schema:
-            type: string
-      tags:
-      - users
-  /myinfo:
-    post:
-      consumes:
-      - application/json
-      description: Get user info by user ID
-      parameters:
-      - description: User ID
-        in: body
-        name: id
-        required: true
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/db.User'
-        "400":
-          description: User not found
-          schema:
-            type: string
-        "500":
-          description: Internal server error
-          schema:
-            type: string
+          description: Internal Server Error
+      summary: 로그인
       tags:
       - users
   /register:
@@ -98,24 +81,12 @@ paths:
       - application/json
       description: Register a new user with email, username and password
       parameters:
-      - description: Email
+      - description: SignUp Request
         in: body
-        name: email
+        name: SignUpRequest
         required: true
         schema:
-          type: string
-      - description: Username
-        in: body
-        name: username
-        required: true
-        schema:
-          type: string
-      - description: Password
-        in: body
-        name: password
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/api.SignUpRequest'
       produces:
       - application/json
       responses:
@@ -124,13 +95,36 @@ paths:
           schema:
             $ref: '#/definitions/db.User'
         "400":
-          description: User already exists
-          schema:
-            type: string
+          description: Bad Request
         "500":
-          description: Internal server error
+          description: Internal Server Error
+      summary: 회원가입
+      tags:
+      - users
+  /user/myinfo:
+    post:
+      consumes:
+      - application/json
+      description: Get user information by ID
+      parameters:
+      - description: MyInfo Request
+        in: body
+        name: MyInfoRequest
+        required: true
+        schema:
+          $ref: '#/definitions/api.MyInfoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/db.User'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: 내정보 가져오기 (By ID)
       tags:
       - users
 swagger: "2.0"

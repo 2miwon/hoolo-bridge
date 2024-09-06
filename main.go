@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 
@@ -19,21 +21,28 @@ import (
 )
 
 func setupDatabase() (*pgxpool.Pool, error) {
+	runSchema := flag.Bool("deploy", false, "Run schema setup")
+    flag.Parse()
+
     err := godotenv.Load()
     utils.CheckErr(err)
 
     dbURI := os.Getenv("DB_URI")
     config, err := pgxpool.ParseConfig(dbURI)
     utils.CheckErr(err)
+	
+    config.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeSimpleProtocol
 
     pool, err := pgxpool.NewWithConfig(context.Background(), config)
     utils.CheckErr(err)
 
-	schema, err := os.ReadFile("sqlc/schema.sql")
-	utils.CheckErr(err)
+	if *runSchema {
+		schema, err := os.ReadFile("sqlc/schema.sql")
+		utils.CheckErr(err)
 
-	_, err = pool.Exec(context.Background(), string(schema))
-	utils.CheckErr(err)
+		_, err = pool.Exec(context.Background(), string(schema))
+		utils.CheckErr(err)
+	}
 
 	fmt.Println("Pinged your deployment. You successfully connected to Postgre DB!")
 
@@ -48,8 +57,8 @@ func setupDatabase() (*pgxpool.Pool, error) {
 // @contact.email zhengsfsf@gmail.com
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host 3.36.212.250:3000 // TODO: change to your server's IP
-// @BasePath /docs
+// @host localhost:3000
+// @BasePath /
 func main() {
 	pool, err := setupDatabase()
 	utils.CheckErr(err)
@@ -64,6 +73,7 @@ func main() {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowMethods: "GET, POST, PUT, DELETE",
 	}))
 
 	app.Get("/", func(c *fiber.Ctx) error {
@@ -102,7 +112,7 @@ func main() {
 
 	app.Post("/user/myinfo", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
-		return api.GetMyInfo(c, q)
+		return api.FetchMyInfo(c, q)
 	})
 
 	app.Listen(":3000")
