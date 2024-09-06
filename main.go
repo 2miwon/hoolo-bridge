@@ -17,10 +17,10 @@ import (
 
 // @title Hoolo API
 // @version 0.1
-// @description This is a swagger docs for Fiber
+// @description This is a Hoolo swagger docs for Fiber
 // @termsOfService http://swagger.io/terms/
 // @contact.name API Support
-// @contact.email fiber@swagger.io
+// @contact.email yheewon@yonsei.ac.kr
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @host 3.36.212.250:3000 // TODO: change to your server's IP
@@ -53,16 +53,28 @@ func main() {
 	})
 
 	app.Get("/ping", func(c *fiber.Ctx) error {
-		var result int
-        err := db.QueryRow(context.Background(), "SELECT 1").Scan(&result)
-        if err != nil {
-            return c.Status(fiber.StatusInternalServerError).SendString("Database connection failed")
-        }
+		err = db.Ping(context.Background())
+
+		if err != nil {
+			return c.SendString("Database connection failed")
+		}
 
         return c.SendString("Database connection successful")
 	})
 
+	app.Get("/test/account/admin", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, Admin!")
+	})
+
+	app.Get("/test/account/user", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World!")
+	})
+
 	app.Get("/docs/*", swagger.HandlerDefault)
+
+	app.Post("login", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World!")
+	})
 
 	// history, bookmark 정보들 다 있음
 	app.Post("/user/my_info", func(c *fiber.Ctx) error {

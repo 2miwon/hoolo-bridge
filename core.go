@@ -42,3 +42,7 @@ func getMyInfo(c *fiber.Ctx, db *pgxpool.Pool) error {
 
         return c.JSON(users)
 }
+
+func login(c *fiber.Ctx, db *pgxpool.Pool) error {
+	return c.SendString("login")
+}
