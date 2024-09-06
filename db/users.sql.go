@@ -10,22 +10,22 @@ import (
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO public.users (email, password, username, created_at)
+INSERT INTO public.users (id, password, username, created_at)
 VALUES ($1, $2, $3, CURRENT_DATE)
-RETURNING email, password, username, profile_image_url, created_at, deleted_at
+RETURNING id, password, username, profile_image_url, created_at, deleted_at
 `
 
 type CreateUserParams struct {
-	Email    string
-	Password string
-	Username string
+	ID       string `json:"id"`
+	Password string `json:"password"`
+	Username string `json:"username"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser, arg.Email, arg.Password, arg.Username)
+	row := q.db.QueryRow(ctx, createUser, arg.ID, arg.Password, arg.Username)
 	var i User
 	err := row.Scan(
-		&i.Email,
+		&i.ID,
 		&i.Password,
 		&i.Username,
 		&i.ProfileImageUrl,
@@ -36,21 +36,21 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUserByEmailAndPassword = `-- name: GetUserByEmailAndPassword :one
-SELECT email, password, username, profile_image_url, created_at, deleted_at
+SELECT id, password, username, profile_image_url, created_at, deleted_at
 FROM public.users
-WHERE email = $1 AND password = $2 AND deleted_at IS NULL
+WHERE id = $1 AND password = $2 AND deleted_at IS NULL
 `
 
 type GetUserByEmailAndPasswordParams struct {
-	Email    string
-	Password string
+	ID       string `json:"id"`
+	Password string `json:"password"`
 }
 
 func (q *Queries) GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEmailAndPasswordParams) (User, error) {
-	row := q.db.QueryRow(ctx, getUserByEmailAndPassword, arg.Email, arg.Password)
+	row := q.db.QueryRow(ctx, getUserByEmailAndPassword, arg.ID, arg.Password)
 	var i User
 	err := row.Scan(
-		&i.Email,
+		&i.ID,
 		&i.Password,
 		&i.Username,
 		&i.ProfileImageUrl,
@@ -61,16 +61,16 @@ func (q *Queries) GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEm
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT email, password, username, profile_image_url, created_at, deleted_at
+SELECT id, password, username, profile_image_url, created_at, deleted_at
 FROM public.users
-WHERE email = $1 AND deleted_at IS NULL
+WHERE id = $1 AND deleted_at IS NULL
 `
 
-func (q *Queries) GetUserByID(ctx context.Context, email string) (User, error) {
-	row := q.db.QueryRow(ctx, getUserByID, email)
+func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {
+	row := q.db.QueryRow(ctx, getUserByID, id)
 	var i User
 	err := row.Scan(
-		&i.Email,
+		&i.ID,
 		&i.Password,
 		&i.Username,
 		&i.ProfileImageUrl,

@@ -90,7 +90,7 @@ func main() {
 		return c.SendString("Hello, World!")
 	})
 
-	app.Post("/signup", func(c *fiber.Ctx) error {
+	app.Post("/register", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 		return api.SignUp(c, q)
 	})
@@ -100,7 +100,7 @@ func main() {
 		return api.Login(c, q)
 	})
 
-	app.Post("/user/my_info", func(c *fiber.Ctx) error {
+	app.Post("/user/myinfo", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 		return api.GetMyInfo(c, q)
 	})

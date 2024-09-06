@@ -5,27 +5,28 @@
 package db
 
 import (
-	"github.com/jackc/pgx/v5/pgtype"
+	"github.com/google/uuid"
+	null "gopkg.in/guregu/null.v4"
 )
 
 type Holog struct {
-	ID           pgtype.UUID
-	PlaceID      int32
-	CreatorID    int32
-	Type         string
-	Title        string
-	Content      string
-	ThumbnailUrl pgtype.Text
-	ExternalUrl  pgtype.Text
-	CreatedAt    pgtype.Date
-	DeletedAt    pgtype.Timestamp
+	ID           uuid.UUID `json:"id"`
+	PlaceID      int32     `json:"place_id"`
+	CreatorID    string    `json:"creator_id"`
+	Type         string    `json:"type"`
+	Title        string    `json:"title"`
+	Content      string    `json:"content"`
+	ThumbnailUrl *string   `json:"thumbnail_url"`
+	ExternalUrl  *string   `json:"external_url"`
+	CreatedAt    null.Time `json:"created_at"`
+	DeletedAt    null.Time `json:"deleted_at"`
 }
 
 type User struct {
-	Email           string
-	Password        string
-	Username        string
-	ProfileImageUrl pgtype.Text
-	CreatedAt       pgtype.Date
-	DeletedAt       pgtype.Timestamp
+	ID              string    `json:"id"`
+	Password        string    `json:"password"`
+	Username        string    `json:"username"`
+	ProfileImageUrl *string   `json:"profile_image_url"`
+	CreatedAt       null.Time `json:"created_at"`
+	DeletedAt       null.Time `json:"deleted_at"`
 }

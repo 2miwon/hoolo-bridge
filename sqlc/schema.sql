@@ -1,14 +1,14 @@
 -- Drop existing tables if they exist
-DROP TABLE IF EXISTS public.users;
-DROP TABLE IF EXISTS public.region;
-DROP TABLE IF EXISTS public.place;
-DROP TABLE IF EXISTS public.holog;
 DROP TABLE IF EXISTS public.travel_schedule;
 DROP TABLE IF EXISTS public.narration_style;
 DROP TABLE IF EXISTS public.narration;
 DROP TABLE IF EXISTS public.narration_series;
 DROP TABLE IF EXISTS public.announce_post;
 DROP TABLE IF EXISTS public.session;
+DROP TABLE IF EXISTS public.holog;
+DROP TABLE IF EXISTS public.place;
+DROP TABLE IF EXISTS public.region;
+DROP TABLE IF EXISTS public.users;
 
 CREATE SCHEMA IF NOT EXISTS public;
 
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS public.users (
     username VARCHAR NOT NULL,
     profile_image_url TEXT,
     created_at DATE DEFAULT CURRENT_DATE,
-    deleted_at TIMESTAMP
+    deleted_at TIMESTAMPTZ DEFAULT NULL
 );
 
 -- CREATE TABLE IF NOT EXISTS public.region (
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS public.holog (
     thumbnail_url TEXT,
     external_url TEXT,
     created_at DATE DEFAULT CURRENT_DATE,
-    deleted_at TIMESTAMP,
+    deleted_at TIMESTAMPTZ,
 
     -- FOREIGN KEY (place_id) REFERENCES public.place(id),
     FOREIGN KEY (creator_id) REFERENCES public.users(id)

@@ -1,75 +1,38 @@
 basePath: /docs
 definitions:
-  main.User:
+  db.User:
     properties:
-      bookMark:
-        items:
-          type: string
-        type: array
-      created:
+      created_at:
         type: string
-      email:
+      deleted_at:
         type: string
-      history:
-        items:
-          $ref: '#/definitions/main.VideoHistory'
-        type: array
       id:
         type: string
       password:
         type: string
-      token:
+      profile_image_url:
         type: string
       username:
         type: string
     type: object
-  main.Video:
-    properties:
-      authorID:
-        description: ThumbnailURL *string `bson:"thumbnail_url"`
-        type: string
-      comments:
-        items:
-          type: string
-        type: array
-      content:
-        type: string
-      created:
-        type: string
-      deleted:
-        type: string
-      id:
-        type: string
-      title:
-        type: string
-      url:
-        type: string
-    type: object
-  main.VideoHistory:
-    properties:
-      date:
-        type: string
-      video_id:
-        type: string
-    type: object
-host: 3.36.212.250:3000
+host: '3.36.212.250:3000 // TODO: change to your server''s IP'
 info:
   contact:
-    email: fiber@swagger.io
+    email: zhengsfsf@gmail.com
     name: API Support
-  description: This is a swagger docs for Fiber
+  description: This is a Hoolo swagger docs for Fiber
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: SuperNova API
-  version: "1.0"
+  title: Hoolo API
+  version: "0.1"
 paths:
   /login:
     post:
       consumes:
       - application/json
-      description: Login with email and password
+      description: Register a new user with email, username and password
       parameters:
       - description: Email
         in: body
@@ -89,20 +52,44 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/db.User'
         "400":
-          description: User not found
-          schema:
-            type: string
-        "403":
-          description: Invalid password
+          description: User already exists
           schema:
             type: string
         "500":
           description: Internal server error
           schema:
             type: string
-      summary: Login
+      tags:
+      - users
+  /myinfo:
+    post:
+      consumes:
+      - application/json
+      description: Get user info by user ID
+      parameters:
+      - description: User ID
+        in: body
+        name: id
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.User'
+        "400":
+          description: User not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
       tags:
       - users
   /register:
@@ -135,7 +122,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.User'
+            $ref: '#/definitions/db.User'
         "400":
           description: User already exists
           schema:
@@ -144,260 +131,6 @@ paths:
           description: Internal server error
           schema:
             type: string
-      summary: Register a new user
       tags:
       - users
-  /user/my_info:
-    post:
-      consumes:
-      - application/json
-      description: Get user info with token
-      parameters:
-      - description: User token
-        in: body
-        name: token
-        required: true
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.User'
-        "403":
-          description: User not found
-          schema:
-            type: string
-      summary: Get user info
-      tags:
-      - users
-  /user/update:
-    post:
-      consumes:
-      - application/json
-      description: Update user with token
-      parameters:
-      - description: User token
-        in: body
-        name: token
-        required: true
-        schema:
-          type: string
-      - description: Video history
-        in: body
-        name: video_history
-        schema:
-          type: string
-      - description: Add bookmark
-        in: body
-        name: add_bookmark
-        schema:
-          type: string
-      - description: Delete bookmark
-        in: body
-        name: delete_bookmark
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: User not found
-          schema:
-            type: string
-        "500":
-          description: Internal server error
-          schema:
-            type: string
-      summary: Update user
-      tags:
-      - users
-  /video/comment:
-    post:
-      consumes:
-      - application/json
-      description: Add comment to video
-      parameters:
-      - description: Video ID
-        in: body
-        name: video_id
-        required: true
-        schema:
-          type: string
-      - description: Add comment
-        in: body
-        name: add_comment
-        required: true
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Video not found
-          schema:
-            type: string
-        "500":
-          description: Internal server error
-          schema:
-            type: string
-      summary: Add comment
-      tags:
-      - videos
-  /videos/all:
-    get:
-      description: Get all videos
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.Video'
-        "500":
-          description: Internal server error
-          schema:
-            type: string
-      summary: Get all videos
-      tags:
-      - videos
-  /videos/create:
-    post:
-      consumes:
-      - application/json
-      description: Create a new video with title, content, url, author_id
-      parameters:
-      - description: Title
-        in: body
-        name: title
-        required: true
-        schema:
-          type: string
-      - description: Content
-        in: body
-        name: content
-        required: true
-        schema:
-          type: string
-      - description: URL
-        in: body
-        name: url
-        required: true
-        schema:
-          type: string
-      - description: Author ID
-        in: body
-        name: author_id
-        required: true
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.Video'
-        "500":
-          description: Internal server error
-          schema:
-            type: string
-      summary: Create a new video
-      tags:
-      - videos
-  /videos/delete:
-    post:
-      consumes:
-      - application/json
-      description: Delete a video with video_id and author_id
-      parameters:
-      - description: Video ID
-        in: body
-        name: video_id
-        required: true
-        schema:
-          type: string
-      - description: My ID
-        in: body
-        name: my_id
-        required: true
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.Video'
-        "400":
-          description: Video not found
-          schema:
-            type: string
-        "500":
-          description: Internal server error
-          schema:
-            type: string
-      summary: Delete a video
-      tags:
-      - videos
-  /videos/info/{video_id}:
-    get:
-      description: Get video info with video_id
-      parameters:
-      - description: Video ID
-        in: path
-        name: video_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.Video'
-        "400":
-          description: Internal server error
-          schema:
-            type: string
-      summary: Get video info
-      tags:
-      - videos
-  /videos/user/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Get my videos with author_id
-      parameters:
-      - description: Author ID
-        in: body
-        name: id
-        required: true
-        schema:
-          type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.Video'
-        "500":
-          description: Internal server error
-          schema:
-            type: string
-      summary: Get my videos
-      tags:
-      - videos
 swagger: "2.0"
