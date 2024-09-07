@@ -10,7 +10,6 @@ debug:
 	air
 
 deploy:
-	sqlc generate
-	swag init
 	mkdir -p ./bin
-	go run main.go -deploy
+	go build -o ./bin/hoolo-bridge
+	nohup ./bin/hoolo-bridge -deploy > /dev/null 2>&1 &
