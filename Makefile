@@ -10,6 +10,7 @@ debug:
 	air
 
 deploy:
+	swag init
 	mkdir -p ./bin
 	go build -o ./bin/hoolo-bridge
 	nohup ./bin/hoolo-bridge -deploy > /dev/null 2>&1 &
