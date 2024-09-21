@@ -23,10 +23,12 @@ func JsonParser(c *fiber.Ctx) map[string]interface{} {
 }
 
 func ContextChecker(c *fiber.Ctx) bool {
+	log.Printf("context: %v", c.Context())
 	return c.Context() != nil
 }
 
 func ParseRequestBody(c *fiber.Ctx, req interface{}) error {
+	log.Printf("request body: %v", req)
     if err := c.BodyParser(req); err != nil {
         return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
             "error": "Invalid request body",

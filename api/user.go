@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"database/sql"
 	"log"
 
 	"github.com/2miwon/hoolo-bridge/db"
@@ -19,7 +20,7 @@ type MyInfoRequest struct {
 // @Accept  json
 // @Produce  json
 // @Param   MyInfoRequest  body    MyInfoRequest  true  "MyInfo Request"
-// @Success 200 {object} db.User
+// @Success 200 {object} db.GetUserByIDRow
 // @Failure 404
 // @Failure 400
 // @Router /user/myinfo [post]
@@ -58,7 +59,7 @@ type SignUpRequest struct {
 // @Accept  json
 // @Produce  json
 // @Param   SignUpRequest  body    SignUpRequest  true  "SignUp Request"
-// @Success 200 {object} db.User
+// @Success 200 {object} db.CreateUserRow
 // @Failure 400 
 // @Failure 500
 // @Router /register [post]
@@ -71,6 +72,18 @@ func SignUp(c *fiber.Ctx, q *db.Queries) error {
     if err != nil {
         return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
             "error": "Invalid request",
+        })
+    }
+
+    existingUser, err := q.GetUserByID(ctx, req.ID)
+    if err == nil && existingUser.ID != "" {
+        return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+            "error": "User ID already exists",
+        })
+    } else if err != nil && err != sql.ErrNoRows {
+        log.Printf("Error checking user ID: %v", err)
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "error": "Failed to check user ID",
         })
     }
 
@@ -100,7 +113,7 @@ type LoginRequest struct {
 // @Accept  json
 // @Produce  json
 // @Param   LoginRequest  body    LoginRequest  true  "Login Request"   
-// @Success 200 {object} db.User
+// @Success 200 {object} db.GetUserByEmailAndPasswordRow
 // @Failure 400
 // @Failure 500
 // @Router /login [post]

@@ -30,7 +30,7 @@ func setupDatabase() (*pgxpool.Pool, error) {
     dbURI := os.Getenv("DB_URI")
     config, err := pgxpool.ParseConfig(dbURI)
     utils.CheckErr(err)
-	
+
     config.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeSimpleProtocol
 
     pool, err := pgxpool.NewWithConfig(context.Background(), config)
@@ -113,6 +113,16 @@ func main() {
 	app.Post("/user/myinfo", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 		return api.FetchMyInfo(c, q)
+	})
+
+	app.Get("/place/list", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.FetchRandomPlaceList(c, q, 10)
+	})
+
+	app.Get("/place/detail/:id", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.FetchPlaceDetail(c, q)
 	})
 
 	app.Listen(":3000")
