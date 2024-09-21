@@ -27,3 +27,4 @@ go.work.sum
 # Output of the go command
 bin/
 tmp/
+docs/
