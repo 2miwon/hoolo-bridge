@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"database/sql"
 	"log"
 
 	"github.com/2miwon/hoolo-bridge/db"
@@ -80,12 +79,14 @@ func SignUp(c *fiber.Ctx, q *db.Queries) error {
         return c.Status(fiber.StatusConflict).JSON(fiber.Map{
             "error": "User ID already exists",
         })
-    } else if err != nil && err != sql.ErrNoRows {
-        log.Printf("Error checking user ID: %v", err)
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": "Failed to check user ID",
-        })
-    }
+    } 
+    // TODO: Check for other errors
+    // else if err != sql.ErrNoRows {
+    //     log.Printf("Error checking user ID: %v", err)
+    //     return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+    //         "error": "Failed to check user ID",
+    //     })
+    // }
 
     user, err := q.CreateUser(ctx, db.CreateUserParams{
         ID:		req.ID,

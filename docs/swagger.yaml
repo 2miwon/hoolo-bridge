@@ -89,6 +89,32 @@ paths:
       summary: 로그인
       tags:
       - users
+  /place/detail/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get place detail
+      parameters:
+      - description: Place ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: 장소 상세정보 가져오기
+      tags:
+      - openapi
   /place/list:
     get:
       consumes:
