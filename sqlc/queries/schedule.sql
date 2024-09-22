@@ -7,6 +7,6 @@ WHERE user_id = $1
     AND enddate > CURRENT_DATE;
 
 -- name: CreateSchedule :one
-INSERT INTO public.schedule (id, user_id, start_date, end_date)
-VALUES ($1, $2, $3, $4)
+INSERT INTO public.schedule (user_id, start_date, end_date)
+VALUES ($1, $2, $3)
 RETURNING id, user_id, start_date, end_date;
