@@ -1,3 +1,5 @@
+SET TIME ZONE 'Asia/Seoul';
+
 -- Drop existing tables if they exist
 DROP TABLE IF EXISTS public.narration_style;
 DROP TABLE IF EXISTS public.narration;
