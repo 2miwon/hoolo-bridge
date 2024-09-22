@@ -161,6 +161,11 @@ func main() {
 		return api.CreateSchedule(c, q)
 	})
 
+	app.Post("/schedule/update", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.UpdateSchedule(c, q)
+	})
+
 	app.Get("/schedule/detail/:schedule_id", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 		return api.GetScheduleDetail(c, q)

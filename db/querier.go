@@ -29,6 +29,7 @@ type Querier interface {
 	ListHologsByUserID(ctx context.Context, creatorID string) ([]ListHologsByUserIDRow, error)
 	ListHologsMostByWeek(ctx context.Context) ([]ListHologsMostByWeekRow, error)
 	SetBookmarkByHologId(ctx context.Context, arg SetBookmarkByHologIdParams) (SetBookmarkByHologIdRow, error)
+	UpdateSchedule(ctx context.Context, arg UpdateScheduleParams) (UpdateScheduleRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

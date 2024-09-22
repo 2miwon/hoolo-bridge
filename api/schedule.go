@@ -69,3 +69,39 @@ func CreateSchedule(c *fiber.Ctx, q *db.Queries) error {
 
 	return c.JSON(res)
 }
+
+// @Summary 스케줄 수정
+// @Description Update schedule
+// @Tags schedule
+// @Accept json
+// @Produce json
+// @Param db.UpdateScheduleParams body db.UpdateScheduleParams true "Update Schedule Request"
+// @Success 200 {object} db.UpdateScheduleRow
+// @Failure 400
+// @Failure 500
+// @Router /schedule/update [put]
+func UpdateSchedule(c *fiber.Ctx, q *db.Queries) error {
+	ctx := context.WithValue(context.Background(), "fiberCtx", c)
+
+	var req db.UpdateScheduleParams
+	if err := c.BodyParser(&req); err != nil {
+		log.Printf("Failed to parse request: %v", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Failed to parse request",
+		})
+	}
+
+	res, err := q.UpdateSchedule(ctx, db.UpdateScheduleParams{
+		ID:		 	req.ID,
+		StartDate:  req.StartDate,
+		EndDate:    req.EndDate,
+	})
+	if err != nil {
+		log.Printf("Failed to update schedule: %v", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to update schedule",
+		})
+	}
+
+	return c.JSON(res)
+}
