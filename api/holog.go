@@ -94,6 +94,16 @@ func CreateHolog(c *fiber.Ctx, q *db.Queries) error {
 	return c.JSON(holog)
 }
 
+// @Summary 특정 유저가 생성한 홀로그 리스트 가져오기
+// @Description Get holog list
+// @Tags holog
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} []db.ListHologsByUserIDRow
+// @Failure 404
+// @Failure 400
+// @Router /holog/user/:id [get]
 func ListHologsByUserID(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 

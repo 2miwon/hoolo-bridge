@@ -15,23 +15,11 @@ import (
 
 type PlaceListResponse struct {
 	Addr1 string `json:"addr1"`
-	Addr2 string `json:"addr2"`
-	Areacode string `json:"areacode"`
-	Booktour string `json:"booktour"`
-	Cat1 string `json:"cat1"`
-	Cat2 string `json:"cat2"`
-	Cat3 string `json:"cat3"`
 	Contentid string `json:"contentid"`
-	Contenttypeid string `json:"contenttypeid"`
-	Createdtime string `json:"createdtime"`
 	Firstimage string `json:"firstimage"`
 	Firstimage2 string `json:"firstimage2"`
-	CpyrhtDivCd string `json:"cpyrhtDivCd"`
 	Mapx string `json:"mapx"`
 	Mapy string `json:"mapy"`
-	Mlevel string `json:"mlevel"`
-	Modifiedtime string `json:"modifiedtime"`
-	Sigungucode string `json:"sigungucode"`
 	Tel string `json:"tel"`
 	Title string `json:"title"`	
 }
@@ -74,16 +62,12 @@ func FetchRandomPlaceList(c *fiber.Ctx, q *db.Queries, n int) error {
 
 type PlaceDetailResponse struct {
 	ContentId string `json:"contentid"`
-	ContentTypeId string `json:"contenttypeid"`
 	FirstImage string `json:"firstimage"`
 	FirstImage2 string `json:"firstimage2"`
-	CpyrhtDivCd string `json:"cpyrhtDivCd"`
 	Addr1 string `json:"addr1"`
-	Addr2 string `json:"addr2"`
 	Zipcode string `json:"zipcode"`
 	Mapx string `json:"mapx"`
 	Mapy string `json:"mapy"`
-	Mlevel string `json:"mlevel"`
 	Overview string `json:"overview"`
 }
 
