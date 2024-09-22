@@ -211,7 +211,8 @@ func main() {
 		return api.ListAnnounces(c, q)
 	})
 	
-	app.Post("/upload", api.UploadBucket)
+	app.Post("/upload", api.UploadBucketSupabase)
+	app.Post("/upload/s3", api.UploadBucket)
 
 	app.Listen(":3000")
 }

@@ -79,7 +79,7 @@ func CreateSchedule(c *fiber.Ctx, q *db.Queries) error {
 // @Success 200 {object} db.UpdateScheduleRow
 // @Failure 400
 // @Failure 500
-// @Router /schedule/update [put]
+// @Router /schedule/update [post]
 func UpdateSchedule(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
