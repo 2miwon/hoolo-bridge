@@ -50,9 +50,8 @@ func GetRequest(c *fiber.Ctx, ctx context.Context, url string) (map[string]inter
 	return result, nil
 }
 
-func OpenApiParser(c *fiber.Ctx, decode_resp map[string]interface{}) map[string]interface{} {
-	items, ok := decode_resp["response"].(map[string]interface{})["body"].(map[string]interface{})["items"].(map[string]interface{})
-
+func OpenApiParser(c *fiber.Ctx, decode_resp map[string]interface{}) []interface{} {
+	items, ok := decode_resp["response"].(map[string]interface{})["body"].(map[string]interface{})["items"].(map[string]interface{})["item"].([]interface{})
 	if !ok {
 		log.Printf("Error parsing response: %v", decode_resp)
 		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

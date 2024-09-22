@@ -6,20 +6,49 @@ package db
 
 import (
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	null "gopkg.in/guregu/null.v4"
 )
 
+type Announce struct {
+	ID        uuid.UUID        `json:"id"`
+	Title     string           `json:"title"`
+	Content   string           `json:"content"`
+	CreatedAt null.Time        `json:"created_at"`
+	DeletedAt pgtype.Timestamp `json:"deleted_at"`
+}
+
+type Bookmark struct {
+	ID      uuid.UUID `json:"id"`
+	UserID  string    `json:"user_id"`
+	HologID int32     `json:"holog_id"`
+}
+
 type Holog struct {
-	ID           uuid.UUID `json:"id"`
-	PlaceID      int32     `json:"place_id"`
-	CreatorID    string    `json:"creator_id"`
-	Type         string    `json:"type"`
-	Title        string    `json:"title"`
-	Content      string    `json:"content"`
-	ThumbnailUrl *string   `json:"thumbnail_url"`
-	ExternalUrl  *string   `json:"external_url"`
-	CreatedAt    null.Time `json:"created_at"`
-	DeletedAt    null.Time `json:"deleted_at"`
+	ID           uuid.UUID   `json:"id"`
+	PlaceID      string      `json:"place_id"`
+	CreatorID    string      `json:"creator_id"`
+	ScheduleID   pgtype.UUID `json:"schedule_id"`
+	Type         string      `json:"type"`
+	Title        string      `json:"title"`
+	Content      string      `json:"content"`
+	ThumbnailUrl *string     `json:"thumbnail_url"`
+	ImageUrl     *string     `json:"image_url"`
+	ExternalUrl  *string     `json:"external_url"`
+	CreatedAt    null.Time   `json:"created_at"`
+	DeletedAt    null.Time   `json:"deleted_at"`
+}
+
+type Schedule struct {
+	ID        uuid.UUID        `json:"id"`
+	PlaceID   string           `json:"place_id"`
+	OwnerID   string           `json:"owner_id"`
+	StartDate pgtype.Timestamp `json:"start_date"`
+	EndDate   pgtype.Timestamp `json:"end_date"`
+	Status    string           `json:"status"`
+	CreatedAt null.Time        `json:"created_at"`
+	UpdatedAt pgtype.Timestamp `json:"updated_at"`
+	DeletedAt pgtype.Timestamp `json:"deleted_at"`
 }
 
 type User struct {

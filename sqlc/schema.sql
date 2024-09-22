@@ -6,7 +6,6 @@ DROP TABLE IF EXISTS public.narration_series;
 DROP TABLE IF EXISTS public.announce_post;
 DROP TABLE IF EXISTS public.session;
 DROP TABLE IF EXISTS public.holog;
-DROP TABLE IF EXISTS public.place;
 DROP TABLE IF EXISTS public.region;
 DROP TABLE IF EXISTS public.users;
 
@@ -21,55 +20,45 @@ CREATE TABLE IF NOT EXISTS public.users (
     deleted_at TIMESTAMPTZ DEFAULT NULL
 );
 
--- CREATE TABLE IF NOT EXISTS public.region (
---     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
---     name TEXT NOT NULL,
---     address TEXT NOT NULL
--- );
+CREATE TABLE IF NOT EXISTS public.schedule (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    place_id TEXT NOT NULL,
+    owner_id TEXT NOT NULL,
+    start_date TIMESTAMP NOT NULL,
+    end_date TIMESTAMP NOT NULL,
+    status TEXT NOT NULL, -- enum 타입을 TEXT로 정의
+    created_at DATE DEFAULT CURRENT_DATE,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP,
 
--- CREATE TABLE IF NOT EXISTS public.place (
---     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
---     region_id INTEGER NOT NULL,
---     title TEXT NOT NULL,
---     address TEXT NOT NULL,
---     thumbnail TEXT,
---     latitude FLOAT,
---     longitude FLOAT,
---     num TEXT,
---     description TEXT,
-
---     FOREIGN KEY (region_id) REFERENCES public.region(id)
--- );
+    FOREIGN KEY (owner_id) REFERENCES public.users(id)
+);
 
 CREATE TABLE IF NOT EXISTS public.holog (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    place_id INTEGER NOT NULL,
+    place_id TEXT NOT NULL,
     creator_id TEXT NOT NULL,
-    type TEXT NOT NULL,
+    schedule_id UUID,
+    type TEXT NOT NULL DEFAULT 'holog', -- tistory / naver
     title TEXT NOT NULL,
     content TEXT NOT NULL,
     thumbnail_url TEXT,
+    image_url TEXT,
     external_url TEXT,
     created_at DATE DEFAULT CURRENT_DATE,
     deleted_at TIMESTAMPTZ,
 
-    -- FOREIGN KEY (place_id) REFERENCES public.place(id),
     FOREIGN KEY (creator_id) REFERENCES public.users(id)
 );
 
--- CREATE TABLE IF NOT EXISTS public.travel_schedule (
---     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
---     place_id UUID NOT NULL,
---     owner_id UUID NOT NULL,
---     start_date TIMESTAMP NOT NULL,
---     end_date TIMESTAMP NOT NULL,
---     status TEXT NOT NULL, -- enum 타입을 TEXT로 정의
---     created_at DATE DEFAULT CURRENT_DATE,
---     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     deleted_at TIMESTAMP,
---     FOREIGN KEY (place_id) REFERENCES public.place(id),
---     FOREIGN KEY (owner_id) REFERENCES public.users(id)
--- );
+CREATE TABLE IF NOT EXISTS public.bookmark (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id TEXT NOT NULL,
+    holog_id INTEGER NOT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES public.users(id),
+    FOREIGN KEY (place_id) REFERENCES public.holog(id)
+);
 
 -- CREATE TABLE IF NOT EXISTS public.narration_style (
 --     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -107,14 +96,13 @@ CREATE TABLE IF NOT EXISTS public.holog (
 --     FOREIGN KEY (creator_id) REFERENCES public.users(id)
 -- );
 
--- CREATE TABLE IF NOT EXISTS public.announce_post (
---     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
---     title TEXT NOT NULL,
---     content TEXT NOT NULL,
---     created_at DATE DEFAULT CURRENT_DATE,
---     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     deleted_at TIMESTAMP
--- );
+CREATE TABLE IF NOT EXISTS public.announce (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    created_at DATE DEFAULT CURRENT_DATE,
+    deleted_at TIMESTAMP
+);
 
 -- CREATE TABLE IF NOT EXISTS public.session (
 --     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

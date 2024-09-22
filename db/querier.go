@@ -6,12 +6,20 @@ package db
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 type Querier interface {
+	CreateHolog(ctx context.Context, arg CreateHologParams) (CreateHologRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
+	GetHologByID(ctx context.Context, id uuid.UUID) (GetHologByIDRow, error)
 	GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEmailAndPasswordParams) (GetUserByEmailAndPasswordRow, error)
 	GetUserByID(ctx context.Context, id string) (GetUserByIDRow, error)
+	ListAnnounces(ctx context.Context) ([]ListAnnouncesRow, error)
+	ListHologsByPlaceId(ctx context.Context, arg ListHologsByPlaceIdParams) ([]ListHologsByPlaceIdRow, error)
+	ListHologsByUserID(ctx context.Context, creatorID string) ([]ListHologsByUserIDRow, error)
+	ListHologsMostByWeek(ctx context.Context) ([]ListHologsMostByWeekRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

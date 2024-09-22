@@ -125,5 +125,40 @@ func main() {
 		return api.FetchPlaceDetail(c, q)
 	})
 
+	app.Get("/place/recent", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.FetchMostPlaceList(c, q)
+	})
+
+	app.Get("/place/search/:keyword", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.SearchPlace(c, q)
+	})
+
+	app.Get("/holog/relate/:id", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.FetchRelatePlaceList(c, q)
+	})
+
+	app.Post("holog/create", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.CreateHolog(c, q)
+	})
+
+	app.Get("/holog/:userId", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.ListHologsByUserID(c, q)
+	})
+
+	// app.Get("/bookmark/list", func(c *fiber.Ctx) error {
+	// 	if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+	// 	return api.FetchBookmarkList(c, q)
+	// }
+
+	app.Get("/announce/list", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.ListAnnounces(c, q)
+	})
+	
 	app.Listen(":3000")
 }

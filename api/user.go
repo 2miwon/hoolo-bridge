@@ -46,18 +46,12 @@ func FetchMyInfo(c *fiber.Ctx, q *db.Queries) error {
     return c.JSON(user)
 }
 
-type SignUpRequest struct {
-    ID    string `json:"id"`
-    Password string `json:"password"`
-    Username string `json:"username"`
-}
-
 // @Summary 회원가입
 // @Description Register a new user with email, username and password
 // @Tags users
 // @Accept  json
 // @Produce  json
-// @Param   SignUpRequest  body    SignUpRequest  true  "SignUp Request"
+// @Param   SignUpRequest  body    db.CreateUserParams  true  "SignUp Request"
 // @Success 200 {object} db.CreateUserRow
 // @Failure 400 
 // @Failure 500
@@ -65,7 +59,7 @@ type SignUpRequest struct {
 func SignUp(c *fiber.Ctx, q *db.Queries) error {
     ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
-    var req SignUpRequest
+    var req db.CreateUserParams
 
     err := utils.ParseRequestBody(c, &req)
     if err != nil {
@@ -103,17 +97,12 @@ func SignUp(c *fiber.Ctx, q *db.Queries) error {
     return c.JSON(user)
 }
 
-type LoginRequest struct {
-    ID    string `json:"id"`
-    Password string `json:"password"`
-}
-
 // @Summary 로그인
 // @Description Login with email and password
 // @Tags users
 // @Accept  json
 // @Produce  json
-// @Param   LoginRequest  body    LoginRequest  true  "Login Request"   
+// @Param   LoginRequest  body    db.GetUserByEmailAndPasswordParams  true  "Login Request"   
 // @Success 200 {object} db.GetUserByEmailAndPasswordRow
 // @Failure 400
 // @Failure 500
@@ -121,7 +110,7 @@ type LoginRequest struct {
 func Login(c *fiber.Ctx, q *db.Queries) error {
     ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
-	var req LoginRequest
+	var req db.GetUserByEmailAndPasswordParams
 
 	err := utils.ParseRequestBody(c, &req)
 	if err != nil {
