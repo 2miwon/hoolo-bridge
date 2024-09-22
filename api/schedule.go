@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/2miwon/hoolo-bridge/db"
 	"github.com/2miwon/hoolo-bridge/utils"
@@ -56,10 +57,18 @@ func CreateSchedule(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
+	loc, err := time.LoadLocation("Asia/Seoul")
+    if err != nil {
+        log.Printf("Failed to load location: %v", err)
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "error": "Failed to load location",
+        })
+    }
+
 	res, err := q.CreateSchedule(ctx, db.CreateScheduleParams{
 		UserID:    req.UserID,
-		StartDate: req.StartDate,
-		EndDate:   req.EndDate,
+		StartDate: req.StartDate.In(loc),
+		EndDate:   req.EndDate.In(loc),
 	})
 	if err != nil {
 		log.Printf("Failed to create schedule: %v", err)
