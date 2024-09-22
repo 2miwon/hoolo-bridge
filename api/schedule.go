@@ -55,7 +55,11 @@ func CreateSchedule(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
-	res, err := q.CreateSchedule(ctx, req)
+	res, err := q.CreateSchedule(ctx, db.CreateScheduleParams{
+		UserID:    req.UserID,
+		StartDate: req.StartDate,
+		EndDate:   req.EndDate,
+	})
 	if err != nil {
 		log.Printf("Failed to create schedule: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
