@@ -7,6 +7,8 @@ package db
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 const deleteBookmarkByHologId = `-- name: DeleteBookmarkByHologId :one
@@ -16,13 +18,13 @@ RETURNING user_id, holog_id
 `
 
 type DeleteBookmarkByHologIdParams struct {
-	UserID  string `json:"user_id"`
-	HologID int32  `json:"holog_id"`
+	UserID  string    `json:"user_id"`
+	HologID uuid.UUID `json:"holog_id"`
 }
 
 type DeleteBookmarkByHologIdRow struct {
-	UserID  string `json:"user_id"`
-	HologID int32  `json:"holog_id"`
+	UserID  string    `json:"user_id"`
+	HologID uuid.UUID `json:"holog_id"`
 }
 
 func (q *Queries) DeleteBookmarkByHologId(ctx context.Context, arg DeleteBookmarkByHologIdParams) (DeleteBookmarkByHologIdRow, error) {
@@ -63,13 +65,13 @@ RETURNING user_id, holog_id
 `
 
 type SetBookmarkByHologIdParams struct {
-	UserID  string `json:"user_id"`
-	HologID int32  `json:"holog_id"`
+	UserID  string    `json:"user_id"`
+	HologID uuid.UUID `json:"holog_id"`
 }
 
 type SetBookmarkByHologIdRow struct {
-	UserID  string `json:"user_id"`
-	HologID int32  `json:"holog_id"`
+	UserID  string    `json:"user_id"`
+	HologID uuid.UUID `json:"holog_id"`
 }
 
 func (q *Queries) SetBookmarkByHologId(ctx context.Context, arg SetBookmarkByHologIdParams) (SetBookmarkByHologIdRow, error) {

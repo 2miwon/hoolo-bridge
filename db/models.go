@@ -5,8 +5,6 @@
 package db
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	null "gopkg.in/guregu/null.v4"
@@ -23,7 +21,7 @@ type Announce struct {
 type Bookmark struct {
 	ID      uuid.UUID `json:"id"`
 	UserID  string    `json:"user_id"`
-	HologID int32     `json:"holog_id"`
+	HologID uuid.UUID `json:"holog_id"`
 }
 
 type Holog struct {
@@ -43,8 +41,8 @@ type Holog struct {
 type Schedule struct {
 	ID        uuid.UUID        `json:"id"`
 	UserID    string           `json:"user_id"`
-	StartDate time.Time        `json:"start_date"`
-	EndDate   time.Time        `json:"end_date"`
+	StartDate null.Time        `json:"start_date"`
+	EndDate   null.Time        `json:"end_date"`
 	CreatedAt null.Time        `json:"created_at"`
 	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 	DeletedAt pgtype.Timestamp `json:"deleted_at"`

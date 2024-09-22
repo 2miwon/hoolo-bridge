@@ -21,6 +21,21 @@ func InitS3Client() {
     })
 }
 
+type UploadResponse struct {
+    Message string `json:"message"`
+    URL     string `json:"url"`
+}
+
+// @Summary 파일 업로드
+// @Description Upload file to Supabase
+// @Tags file
+// @Accept multipart/form-data
+// @Produce json
+// @Param file formData file true "File to upload"
+// @Success 200 {object} UploadResponse
+// @Failure 400
+// @Failure 500
+// @Router /upload [post]
 func UploadBucket(c *fiber.Ctx) error {
     file, err := c.FormFile("file")
     if err != nil {
@@ -53,8 +68,8 @@ func UploadBucket(c *fiber.Ctx) error {
 
     fileURL := fmt.Sprintf("https://project_ref.supabase.co/storage/v1/object/public/%s/%s", bucketName, filePath)
 
-    return c.JSON(fiber.Map{
-        "message": "File uploaded successfully",
-        "url":     fileURL,
+    return c.JSON(UploadResponse{
+        Message: "File uploaded successfully",
+        URL:     fileURL,
     })
 }
