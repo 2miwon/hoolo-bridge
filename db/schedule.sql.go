@@ -7,9 +7,9 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
-	null "gopkg.in/guregu/null.v4"
 )
 
 const createSchedule = `-- name: CreateSchedule :one
@@ -20,15 +20,15 @@ RETURNING id, user_id, start_date, end_date
 
 type CreateScheduleParams struct {
 	UserID    string    `json:"user_id"`
-	StartDate null.Time `json:"start_date"`
-	EndDate   null.Time `json:"end_date"`
+	StartDate time.Time `json:"start_date"`
+	EndDate   time.Time `json:"end_date"`
 }
 
 type CreateScheduleRow struct {
 	ID        uuid.UUID `json:"id"`
 	UserID    string    `json:"user_id"`
-	StartDate null.Time `json:"start_date"`
-	EndDate   null.Time `json:"end_date"`
+	StartDate time.Time `json:"start_date"`
+	EndDate   time.Time `json:"end_date"`
 }
 
 func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) (CreateScheduleRow, error) {
@@ -48,15 +48,15 @@ SELECT id, user_id, start_date, end_date
 FROM public.schedule
 WHERE user_id = $1 
     AND deleted_at IS NULL
-    AND startdate < CURRENT_DATE
-    AND enddate > CURRENT_DATE
+    AND start_date < CURRENT_DATE
+    AND end_date > CURRENT_DATE
 `
 
 type GetScheduleByUserIDRow struct {
 	ID        uuid.UUID `json:"id"`
 	UserID    string    `json:"user_id"`
-	StartDate null.Time `json:"start_date"`
-	EndDate   null.Time `json:"end_date"`
+	StartDate time.Time `json:"start_date"`
+	EndDate   time.Time `json:"end_date"`
 }
 
 func (q *Queries) GetScheduleByUserID(ctx context.Context, userID string) (GetScheduleByUserIDRow, error) {

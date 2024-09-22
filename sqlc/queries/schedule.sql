@@ -3,8 +3,8 @@ SELECT id, user_id, start_date, end_date
 FROM public.schedule
 WHERE user_id = $1 
     AND deleted_at IS NULL
-    AND startdate < CURRENT_DATE
-    AND enddate > CURRENT_DATE;
+    AND start_date < CURRENT_DATE
+    AND end_date > CURRENT_DATE;
 
 -- name: CreateSchedule :one
 INSERT INTO public.schedule (user_id, start_date, end_date)
