@@ -64,10 +64,12 @@ func main() {
 	utils.CheckErr(err)
 	defer pool.Close()
 
+	api.InitS3Client()
+
 	q := db.New(pool)
 
 	app := fiber.New()
-
+	
 	app.Static("/public", "./")
 
 	app.Use(cors.New(cors.Config{
@@ -204,5 +206,7 @@ func main() {
 		return api.ListAnnounces(c, q)
 	})
 	
+	app.Post("/upload", api.UploadBucket)
+
 	app.Listen(":3000")
 }
