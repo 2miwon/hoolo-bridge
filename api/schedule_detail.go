@@ -16,7 +16,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param user_id query string true "Schedule ID"
-// @Success 200 {object} []db.GetMyScheduleDetailsByScheduleIdRow
+// @Success 200 {object} []db.ScheduleDetail
 // @Failure 400
 // @Failure 500
 // @Router /schedule/detail/ [get]
@@ -48,7 +48,7 @@ func GetScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 // @Accept json
 // @Produce json
 // @Param user_id query string true "Schedule ID"
-// @Success 200 {object} []db.GetScheduleDetailByScheduleIdAndPlaceIdRow
+// @Success 200 {object} []db.ScheduleDetail
 // @Failure 400
 // @Failure 500
 // @Router /schedule/detail/place [post]
@@ -85,7 +85,7 @@ func GetScheduleDetailByPlaceID(c *fiber.Ctx, q *db.Queries) error {
 // @Accept json
 // @Produce json
 // @Param db.CreateScheduleDetailParams body db.CreateScheduleDetailParams true "Create Schedule Detail Request"
-// @Success 200 {object} db.CreateScheduleDetailRow
+// @Success 200 {object} db.ScheduleDetail
 // @Failure 400
 // @Failure 500
 // @Router /schedule/detail/create [post]
@@ -119,7 +119,7 @@ func CreateScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 // @Accept json
 // @Produce json
 // @Param db.DeleteScheduleDetailParams body db.DeleteScheduleDetailParams true "Delete Schedule Detail Request"
-// @Success 200 {object} db.DeleteScheduleDetailRow
+// @Success 200 {object} db.ScheduleDetail
 // @Failure 400
 // @Failure 500
 // @Router /schedule/detail/delete [post]

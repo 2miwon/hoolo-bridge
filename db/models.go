@@ -13,11 +13,11 @@ import (
 )
 
 type Announce struct {
-	ID        uuid.UUID        `json:"id"`
-	Title     string           `json:"title"`
-	Content   string           `json:"content"`
-	CreatedAt null.Time        `json:"created_at"`
-	DeletedAt pgtype.Timestamp `json:"deleted_at"`
+	ID        uuid.UUID `json:"id"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	CreatedAt null.Time `json:"created_at"`
+	DeletedAt null.Time `json:"deleted_at"`
 }
 
 type Bookmark struct {
@@ -41,21 +41,19 @@ type Holog struct {
 }
 
 type Schedule struct {
-	ID        uuid.UUID        `json:"id"`
-	UserID    string           `json:"user_id"`
-	StartDate time.Time        `json:"start_date"`
-	EndDate   time.Time        `json:"end_date"`
-	CreatedAt null.Time        `json:"created_at"`
-	UpdatedAt pgtype.Timestamp `json:"updated_at"`
-	DeletedAt pgtype.Timestamp `json:"deleted_at"`
+	ID        uuid.UUID `json:"id"`
+	UserID    string    `json:"user_id"`
+	StartDate time.Time `json:"start_date"`
+	EndDate   time.Time `json:"end_date"`
+	CreatedAt null.Time `json:"created_at"`
+	UpdatedAt null.Time `json:"updated_at"`
+	DeletedAt null.Time `json:"deleted_at"`
 }
 
 type ScheduleDetail struct {
-	ID         uuid.UUID        `json:"id"`
-	ScheduleID uuid.UUID        `json:"schedule_id"`
-	PlaceID    string           `json:"place_id"`
-	CreatedAt  null.Time        `json:"created_at"`
-	DeletedAt  pgtype.Timestamp `json:"deleted_at"`
+	ID         uuid.UUID `json:"id"`
+	ScheduleID uuid.UUID `json:"schedule_id"`
+	PlaceID    string    `json:"place_id"`
 }
 
 type User struct {
@@ -63,6 +61,5 @@ type User struct {
 	Password        string    `json:"password"`
 	Username        string    `json:"username"`
 	ProfileImageUrl *string   `json:"profile_image_url"`
-	CreatedAt       null.Time `json:"created_at"`
 	DeletedAt       null.Time `json:"deleted_at"`
 }

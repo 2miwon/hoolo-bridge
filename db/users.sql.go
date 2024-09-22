@@ -7,13 +7,11 @@ package db
 
 import (
 	"context"
-
-	null "gopkg.in/guregu/null.v4"
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO public.users (id, password, username, created_at)
-VALUES ($1, $2, $3, CURRENT_DATE)
+INSERT INTO public.users (id, password, username)
+VALUES ($1, $2, $3)
 RETURNING id, username
 `
 
@@ -35,8 +33,27 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 	return i, err
 }
 
+const deleteUserByID = `-- name: DeleteUserByID :one
+UPDATE public.users
+SET deleted_at = NOW()
+WHERE id = $1
+RETURNING id, username
+`
+
+type DeleteUserByIDRow struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+}
+
+func (q *Queries) DeleteUserByID(ctx context.Context, id string) (DeleteUserByIDRow, error) {
+	row := q.db.QueryRow(ctx, deleteUserByID, id)
+	var i DeleteUserByIDRow
+	err := row.Scan(&i.ID, &i.Username)
+	return i, err
+}
+
 const getUserByEmailAndPassword = `-- name: GetUserByEmailAndPassword :one
-SELECT id, username, profile_image_url, created_at
+SELECT id, username, profile_image_url
 FROM public.users
 WHERE id = $1 AND password = $2 AND deleted_at IS NULL
 `
@@ -47,45 +64,33 @@ type GetUserByEmailAndPasswordParams struct {
 }
 
 type GetUserByEmailAndPasswordRow struct {
-	ID              string    `json:"id"`
-	Username        string    `json:"username"`
-	ProfileImageUrl *string   `json:"profile_image_url"`
-	CreatedAt       null.Time `json:"created_at"`
+	ID              string  `json:"id"`
+	Username        string  `json:"username"`
+	ProfileImageUrl *string `json:"profile_image_url"`
 }
 
 func (q *Queries) GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEmailAndPasswordParams) (GetUserByEmailAndPasswordRow, error) {
 	row := q.db.QueryRow(ctx, getUserByEmailAndPassword, arg.ID, arg.Password)
 	var i GetUserByEmailAndPasswordRow
-	err := row.Scan(
-		&i.ID,
-		&i.Username,
-		&i.ProfileImageUrl,
-		&i.CreatedAt,
-	)
+	err := row.Scan(&i.ID, &i.Username, &i.ProfileImageUrl)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, username, profile_image_url, created_at
+SELECT id, username, profile_image_url
 FROM public.users
 WHERE id = $1 AND deleted_at IS NULL
 `
 
 type GetUserByIDRow struct {
-	ID              string    `json:"id"`
-	Username        string    `json:"username"`
-	ProfileImageUrl *string   `json:"profile_image_url"`
-	CreatedAt       null.Time `json:"created_at"`
+	ID              string  `json:"id"`
+	Username        string  `json:"username"`
+	ProfileImageUrl *string `json:"profile_image_url"`
 }
 
 func (q *Queries) GetUserByID(ctx context.Context, id string) (GetUserByIDRow, error) {
 	row := q.db.QueryRow(ctx, getUserByID, id)
 	var i GetUserByIDRow
-	err := row.Scan(
-		&i.ID,
-		&i.Username,
-		&i.ProfileImageUrl,
-		&i.CreatedAt,
-	)
+	err := row.Scan(&i.ID, &i.Username, &i.ProfileImageUrl)
 	return i, err
 }

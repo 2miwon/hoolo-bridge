@@ -133,3 +133,41 @@ func Login(c *fiber.Ctx, q *db.Queries) error {
 
 	return c.JSON(user)
 }
+
+type DeleteRespnse struct {
+    Message string `json:"message"`
+}
+
+// @Summary 회원탈퇴
+// @Description Resign from the service
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param   MyInfoRequest  body    MyInfoRequest  true  "MyInfo Request"
+// @Success 200 {object} DeleteRespnse
+// @Failure 400
+// @Failure 500
+func Resign(c *fiber.Ctx, q *db.Queries) error {
+    ctx := context.WithValue(context.Background(), "fiberCtx", c)
+
+    var req MyInfoRequest
+
+    err := utils.ParseRequestBody(c, &req)
+    if err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+            "error": "Invalid request",
+        })
+    }
+
+    _, err = q.DeleteUserByID(ctx, req.ID)
+    if err != nil {
+        log.Printf("Error deleting user: %v", err)
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "error": "Failed to delete user",
+        })
+    }
+
+    return c.JSON(fiber.Map{
+        "message": "User deleted successfully",
+    })
+}

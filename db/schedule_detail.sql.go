@@ -9,13 +9,12 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	null "gopkg.in/guregu/null.v4"
 )
 
 const createScheduleDetail = `-- name: CreateScheduleDetail :one
 INSERT INTO public.schedule_detail (schedule_id, place_id)
 VALUES ($1, $2)
-RETURNING id, schedule_id, place_id, created_at
+RETURNING id, schedule_id, place_id
 `
 
 type CreateScheduleDetailParams struct {
@@ -23,22 +22,10 @@ type CreateScheduleDetailParams struct {
 	PlaceID    string    `json:"place_id"`
 }
 
-type CreateScheduleDetailRow struct {
-	ID         uuid.UUID `json:"id"`
-	ScheduleID uuid.UUID `json:"schedule_id"`
-	PlaceID    string    `json:"place_id"`
-	CreatedAt  null.Time `json:"created_at"`
-}
-
-func (q *Queries) CreateScheduleDetail(ctx context.Context, arg CreateScheduleDetailParams) (CreateScheduleDetailRow, error) {
+func (q *Queries) CreateScheduleDetail(ctx context.Context, arg CreateScheduleDetailParams) (ScheduleDetail, error) {
 	row := q.db.QueryRow(ctx, createScheduleDetail, arg.ScheduleID, arg.PlaceID)
-	var i CreateScheduleDetailRow
-	err := row.Scan(
-		&i.ID,
-		&i.ScheduleID,
-		&i.PlaceID,
-		&i.CreatedAt,
-	)
+	var i ScheduleDetail
+	err := row.Scan(&i.ID, &i.ScheduleID, &i.PlaceID)
 	return i, err
 }
 
@@ -46,7 +33,7 @@ const deleteScheduleDetail = `-- name: DeleteScheduleDetail :one
 UPDATE public.schedule_detail
 SET deleted_at = NOW()
 WHERE schedule_id = $1 AND place_id = $2
-RETURNING id, schedule_id, place_id, created_at
+RETURNING id, schedule_id, place_id
 `
 
 type DeleteScheduleDetailParams struct {
@@ -54,53 +41,29 @@ type DeleteScheduleDetailParams struct {
 	PlaceID    string    `json:"place_id"`
 }
 
-type DeleteScheduleDetailRow struct {
-	ID         uuid.UUID `json:"id"`
-	ScheduleID uuid.UUID `json:"schedule_id"`
-	PlaceID    string    `json:"place_id"`
-	CreatedAt  null.Time `json:"created_at"`
-}
-
-func (q *Queries) DeleteScheduleDetail(ctx context.Context, arg DeleteScheduleDetailParams) (DeleteScheduleDetailRow, error) {
+func (q *Queries) DeleteScheduleDetail(ctx context.Context, arg DeleteScheduleDetailParams) (ScheduleDetail, error) {
 	row := q.db.QueryRow(ctx, deleteScheduleDetail, arg.ScheduleID, arg.PlaceID)
-	var i DeleteScheduleDetailRow
-	err := row.Scan(
-		&i.ID,
-		&i.ScheduleID,
-		&i.PlaceID,
-		&i.CreatedAt,
-	)
+	var i ScheduleDetail
+	err := row.Scan(&i.ID, &i.ScheduleID, &i.PlaceID)
 	return i, err
 }
 
 const getMyScheduleDetailsByScheduleId = `-- name: GetMyScheduleDetailsByScheduleId :many
-SELECT id, schedule_id, place_id, created_at
+SELECT id, schedule_id, place_id
 FROM public.schedule_detail
 WHERE schedule_id = $1 AND deleted_at IS NULL
 `
 
-type GetMyScheduleDetailsByScheduleIdRow struct {
-	ID         uuid.UUID `json:"id"`
-	ScheduleID uuid.UUID `json:"schedule_id"`
-	PlaceID    string    `json:"place_id"`
-	CreatedAt  null.Time `json:"created_at"`
-}
-
-func (q *Queries) GetMyScheduleDetailsByScheduleId(ctx context.Context, scheduleID uuid.UUID) ([]GetMyScheduleDetailsByScheduleIdRow, error) {
+func (q *Queries) GetMyScheduleDetailsByScheduleId(ctx context.Context, scheduleID uuid.UUID) ([]ScheduleDetail, error) {
 	rows, err := q.db.Query(ctx, getMyScheduleDetailsByScheduleId, scheduleID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetMyScheduleDetailsByScheduleIdRow{}
+	items := []ScheduleDetail{}
 	for rows.Next() {
-		var i GetMyScheduleDetailsByScheduleIdRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.ScheduleID,
-			&i.PlaceID,
-			&i.CreatedAt,
-		); err != nil {
+		var i ScheduleDetail
+		if err := rows.Scan(&i.ID, &i.ScheduleID, &i.PlaceID); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -111,8 +74,8 @@ func (q *Queries) GetMyScheduleDetailsByScheduleId(ctx context.Context, schedule
 	return items, nil
 }
 
-const getScheduleDetailByScheduleIdAndPlaceId = `-- name: GetScheduleDetailByScheduleIdAndPlaceId :one
-SELECT id, schedule_id, place_id, created_at
+const getScheduleDetailByScheduleIdAndPlaceId = `-- name: GetScheduleDetailByScheduleIdAndPlaceId :many
+SELECT id, schedule_id, place_id
 FROM public.schedule_detail
 WHERE schedule_id = $1 AND place_id = $2 AND deleted_at IS NULL
 `
@@ -122,21 +85,22 @@ type GetScheduleDetailByScheduleIdAndPlaceIdParams struct {
 	PlaceID    string    `json:"place_id"`
 }
 
-type GetScheduleDetailByScheduleIdAndPlaceIdRow struct {
-	ID         uuid.UUID `json:"id"`
-	ScheduleID uuid.UUID `json:"schedule_id"`
-	PlaceID    string    `json:"place_id"`
-	CreatedAt  null.Time `json:"created_at"`
-}
-
-func (q *Queries) GetScheduleDetailByScheduleIdAndPlaceId(ctx context.Context, arg GetScheduleDetailByScheduleIdAndPlaceIdParams) (GetScheduleDetailByScheduleIdAndPlaceIdRow, error) {
-	row := q.db.QueryRow(ctx, getScheduleDetailByScheduleIdAndPlaceId, arg.ScheduleID, arg.PlaceID)
-	var i GetScheduleDetailByScheduleIdAndPlaceIdRow
-	err := row.Scan(
-		&i.ID,
-		&i.ScheduleID,
-		&i.PlaceID,
-		&i.CreatedAt,
-	)
-	return i, err
+func (q *Queries) GetScheduleDetailByScheduleIdAndPlaceId(ctx context.Context, arg GetScheduleDetailByScheduleIdAndPlaceIdParams) ([]ScheduleDetail, error) {
+	rows, err := q.db.Query(ctx, getScheduleDetailByScheduleIdAndPlaceId, arg.ScheduleID, arg.PlaceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ScheduleDetail{}
+	for rows.Next() {
+		var i ScheduleDetail
+		if err := rows.Scan(&i.ID, &i.ScheduleID, &i.PlaceID); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

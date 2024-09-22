@@ -18,18 +18,17 @@ CREATE TABLE IF NOT EXISTS public.users (
     password TEXT NOT NULL,
     username VARCHAR NOT NULL,
     profile_image_url TEXT,
-    created_at DATE DEFAULT CURRENT_DATE,
     deleted_at TIMESTAMPTZ DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS public.schedule (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id TEXT NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    created_at DATE DEFAULT CURRENT_DATE,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP,
+    start_date TIMESTAMPTZ NOT NULL,
+    end_date TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMPTZ,
 
     FOREIGN KEY (user_id) REFERENCES public.users(id)
 );
@@ -38,8 +37,6 @@ CREATE TABLE IF NOT EXISTS public.schedule_detail (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     schedule_id UUID NOT NULL,
     place_id TEXT NOT NULL,
-    created_at DATE DEFAULT CURRENT_DATE,
-    deleted_at TIMESTAMP,
     FOREIGN KEY (schedule_id) REFERENCES public.schedule(id)
 );
 
@@ -53,7 +50,7 @@ CREATE TABLE IF NOT EXISTS public.holog (
     content TEXT NOT NULL,
     image_url TEXT,
     external_url TEXT,
-    created_at DATE DEFAULT CURRENT_DATE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMPTZ,
 
     FOREIGN KEY (creator_id) REFERENCES public.users(id)
@@ -107,8 +104,8 @@ CREATE TABLE IF NOT EXISTS public.announce (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
     content TEXT NOT NULL,
-    created_at DATE DEFAULT CURRENT_DATE,
-    deleted_at TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMPTZ
 );
 
 -- CREATE TABLE IF NOT EXISTS public.session (
