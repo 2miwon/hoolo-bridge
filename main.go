@@ -119,7 +119,7 @@ func main() {
 
 	app.Get("/place/list", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
-		return api.FetchRandomPlaceList(c, 10)
+		return api.FetchRandomPlaceList(c, 5)
 	})
 
 	app.Get("/place/detail/:id", func(c *fiber.Ctx) error {
