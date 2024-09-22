@@ -12,8 +12,10 @@ import (
 
 type Querier interface {
 	CreateHolog(ctx context.Context, arg CreateHologParams) (CreateHologRow, error)
+	CreateSchedule(ctx context.Context, arg CreateScheduleParams) (CreateScheduleRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	GetHologByID(ctx context.Context, id uuid.UUID) (GetHologByIDRow, error)
+	GetScheduleByUserID(ctx context.Context, userID string) (GetScheduleByUserIDRow, error)
 	GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEmailAndPasswordParams) (GetUserByEmailAndPasswordRow, error)
 	GetUserByID(ctx context.Context, id string) (GetUserByIDRow, error)
 	ListAnnounces(ctx context.Context) ([]ListAnnouncesRow, error)

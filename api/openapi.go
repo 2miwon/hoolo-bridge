@@ -37,11 +37,10 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
 	base_url := os.Getenv("OPENAPI_LOCATION")
 	
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	// result := make([]map[string]interface{}, 0, n)
+	result := make([]map[string]interface{}, 0, n)
 
-	// for i := 0; i < n; i++ {
+	for len(result) < 10 {
 		pageNo := r.Intn(246) + 1
-
 		url := base_url + "&pageNo=" + fmt.Sprintf("%d", pageNo)
 
 		resp, err := GetRequest(c, ctx, url)
@@ -53,10 +52,25 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
 		}
 
 		parsed := OpenApiParser(c, resp)
-		// result = append(result, parsed)
-	// }
+		
+		for _, item := range parsed {
+    	    // data를 map[string]interface{} 타입으로 변환
+    	    data, ok := item.(map[string]interface{})
+    	    if !ok {
+    	        log.Printf("Error parsing data: %v", item)
+    	        continue
+    	    }
 
-	return c.JSON(parsed)
+    	    if photo, ok := data["firstimage"]; ok && photo != "" {
+    	        result = append(result, data)
+    	        if len(result) >= 10 {
+    	            break
+    	        }
+    	    }
+    	}
+	}
+
+	return c.JSON(result)
 }
 
 type PlaceDetailResponse struct {
@@ -95,7 +109,7 @@ func FetchPlaceDetail(c *fiber.Ctx) error {
 		})
 	}
 
-	result := OpenApiParser(c, resp)
+	result := OpenApiParser(c, resp)[0]
 
 	log.Printf("place detail: %v", result)
 	

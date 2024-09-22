@@ -21,7 +21,7 @@ type Announce struct {
 type Bookmark struct {
 	ID      uuid.UUID `json:"id"`
 	UserID  string    `json:"user_id"`
-	HologID int32     `json:"holog_id"`
+	PlaceID int32     `json:"place_id"`
 }
 
 type Holog struct {
