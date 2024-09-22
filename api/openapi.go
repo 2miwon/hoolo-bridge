@@ -118,7 +118,7 @@ func SearchPlace(c *fiber.Ctx) error {
 
 	keyword := c.Query("keyword")
 	encodedKeyword := url.QueryEscape(keyword)
-	url := base_url + "&keyword=" + encodedKeyword
+	url := base_url + "&numOfRows=16&pageNo=1&keyword=" + encodedKeyword
 
 	resp, err := GetRequest(c, ctx, url)
 	if err != nil {

@@ -41,14 +41,21 @@ type Holog struct {
 
 type Schedule struct {
 	ID        uuid.UUID        `json:"id"`
-	PlaceID   string           `json:"place_id"`
-	OwnerID   string           `json:"owner_id"`
+	UserID    string           `json:"user_id"`
 	StartDate pgtype.Timestamp `json:"start_date"`
 	EndDate   pgtype.Timestamp `json:"end_date"`
-	Status    string           `json:"status"`
 	CreatedAt null.Time        `json:"created_at"`
 	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 	DeletedAt pgtype.Timestamp `json:"deleted_at"`
+}
+
+type ScheduleDetail struct {
+	ID         uuid.UUID        `json:"id"`
+	ScheduleID uuid.UUID        `json:"schedule_id"`
+	PlaceID    string           `json:"place_id"`
+	CreatedAt  null.Time        `json:"created_at"`
+	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
+	DeletedAt  pgtype.Timestamp `json:"deleted_at"`
 }
 
 type User struct {

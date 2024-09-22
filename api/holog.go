@@ -86,7 +86,7 @@ func FetchMostPlaceList(c *fiber.Ctx, q *db.Queries) error {
 // @Success 200 {object} []db.ListHologsByPlaceIdRow
 // @Failure 404
 // @Failure 400
-// @Router /place/relate/:id [get]
+// @Router /holog/relate/:id [get]
 func FetchRelatePlaceList(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 

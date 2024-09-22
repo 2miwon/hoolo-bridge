@@ -22,16 +22,25 @@ CREATE TABLE IF NOT EXISTS public.users (
 
 CREATE TABLE IF NOT EXISTS public.schedule (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    place_id TEXT NOT NULL,
-    owner_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
     start_date TIMESTAMP NOT NULL,
     end_date TIMESTAMP NOT NULL,
-    status TEXT NOT NULL, -- enum 타입을 TEXT로 정의
     created_at DATE DEFAULT CURRENT_DATE,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP,
 
-    FOREIGN KEY (owner_id) REFERENCES public.users(id)
+    FOREIGN KEY (user_id) REFERENCES public.users(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.schedule_detail (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    schedule_id UUID NOT NULL,
+    place_id TEXT NOT NULL,
+    created_at DATE DEFAULT CURRENT_DATE,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP,
+
+    FOREIGN KEY (schedule_id) REFERENCES public.schedule(id)
 );
 
 CREATE TABLE IF NOT EXISTS public.holog (
