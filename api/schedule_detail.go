@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/2miwon/hoolo-bridge/db"
+	"github.com/2miwon/hoolo-bridge/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
@@ -56,7 +57,7 @@ func GetScheduleDetailByPlaceID(c *fiber.Ctx, q *db.Queries) error {
 
 	var req	db.GetScheduleDetailByScheduleIdAndPlaceIdParams
 
-	err := c.BodyParser(&req)
+	err := utils.ParseRequestBody(c, &req)
 	if err != nil {
 		log.Printf("Error parsing request body: %v", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -93,7 +94,7 @@ func CreateScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 
 	var req db.CreateScheduleDetailParams
 
-	err := c.BodyParser(&req)
+	err := utils.ParseRequestBody(c, &req)
 	if err != nil {
 		log.Printf("Error parsing request body: %v", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -127,7 +128,7 @@ func DeleteScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 
 	var req db.DeleteScheduleDetailParams
 
-	err := c.BodyParser(&req)
+	err := utils.ParseRequestBody(c, &req)
 	if err != nil {
 		log.Printf("Error parsing request body: %v", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{

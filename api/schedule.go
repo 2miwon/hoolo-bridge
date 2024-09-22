@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/2miwon/hoolo-bridge/db"
+	"github.com/2miwon/hoolo-bridge/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -48,7 +49,7 @@ func CreateSchedule(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
 	var req db.CreateScheduleParams
-	if err := c.BodyParser(&req); err != nil {
+	if 	err := utils.ParseRequestBody(c, &req); err != nil {
 		log.Printf("Failed to parse request: %v", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Failed to parse request",
@@ -84,7 +85,7 @@ func UpdateSchedule(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
 	var req db.UpdateScheduleParams
-	if err := c.BodyParser(&req); err != nil {
+	if 	err := utils.ParseRequestBody(c, &req); err != nil {
 		log.Printf("Failed to parse request: %v", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Failed to parse request",

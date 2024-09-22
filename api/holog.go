@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/2miwon/hoolo-bridge/db"
+	"github.com/2miwon/hoolo-bridge/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -122,7 +123,7 @@ func CreateHolog(c *fiber.Ctx, q *db.Queries) error {
 
 	var req db.CreateHologParams
 
-	err := c.BodyParser(&req)
+	err := utils.ParseRequestBody(c, &req)
 	if err != nil {
 		log.Printf("Error parsing request body: %v", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
