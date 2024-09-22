@@ -7,9 +7,9 @@ package db
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createSchedule = `-- name: CreateSchedule :one
@@ -19,17 +19,17 @@ RETURNING id, user_id, start_date, end_date
 `
 
 type CreateScheduleParams struct {
-	ID        uuid.UUID        `json:"id"`
-	UserID    string           `json:"user_id"`
-	StartDate pgtype.Timestamp `json:"start_date"`
-	EndDate   pgtype.Timestamp `json:"end_date"`
+	ID        uuid.UUID `json:"id"`
+	UserID    string    `json:"user_id"`
+	StartDate time.Time `json:"start_date"`
+	EndDate   time.Time `json:"end_date"`
 }
 
 type CreateScheduleRow struct {
-	ID        uuid.UUID        `json:"id"`
-	UserID    string           `json:"user_id"`
-	StartDate pgtype.Timestamp `json:"start_date"`
-	EndDate   pgtype.Timestamp `json:"end_date"`
+	ID        uuid.UUID `json:"id"`
+	UserID    string    `json:"user_id"`
+	StartDate time.Time `json:"start_date"`
+	EndDate   time.Time `json:"end_date"`
 }
 
 func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) (CreateScheduleRow, error) {
@@ -59,10 +59,10 @@ WHERE user_id = $1
 `
 
 type GetScheduleByUserIDRow struct {
-	ID        uuid.UUID        `json:"id"`
-	UserID    string           `json:"user_id"`
-	StartDate pgtype.Timestamp `json:"start_date"`
-	EndDate   pgtype.Timestamp `json:"end_date"`
+	ID        uuid.UUID `json:"id"`
+	UserID    string    `json:"user_id"`
+	StartDate time.Time `json:"start_date"`
+	EndDate   time.Time `json:"end_date"`
 }
 
 func (q *Queries) GetScheduleByUserID(ctx context.Context, userID string) (GetScheduleByUserIDRow, error) {

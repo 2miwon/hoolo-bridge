@@ -9,43 +9,44 @@ import (
 	"context"
 )
 
-const deleteBookmarkByPlaceId = `-- name: DeleteBookmarkByPlaceId :one
+const deleteBookmarkByHologId = `-- name: DeleteBookmarkByHologId :one
 DELETE FROM public.bookmark
-WHERE user_id = $1 AND place_id = $2
-RETURNING user_id, place_id
+WHERE user_id = $1 AND holog_id = $2
+RETURNING user_id, holog_id
 `
 
-type DeleteBookmarkByPlaceIdParams struct {
+type DeleteBookmarkByHologIdParams struct {
 	UserID  string `json:"user_id"`
-	PlaceID int32  `json:"place_id"`
+	HologID int32  `json:"holog_id"`
 }
 
-type DeleteBookmarkByPlaceIdRow struct {
+type DeleteBookmarkByHologIdRow struct {
 	UserID  string `json:"user_id"`
-	PlaceID int32  `json:"place_id"`
+	HologID int32  `json:"holog_id"`
 }
 
-func (q *Queries) DeleteBookmarkByPlaceId(ctx context.Context, arg DeleteBookmarkByPlaceIdParams) (DeleteBookmarkByPlaceIdRow, error) {
-	row := q.db.QueryRow(ctx, deleteBookmarkByPlaceId, arg.UserID, arg.PlaceID)
-	var i DeleteBookmarkByPlaceIdRow
-	err := row.Scan(&i.UserID, &i.PlaceID)
+func (q *Queries) DeleteBookmarkByHologId(ctx context.Context, arg DeleteBookmarkByHologIdParams) (DeleteBookmarkByHologIdRow, error) {
+	row := q.db.QueryRow(ctx, deleteBookmarkByHologId, arg.UserID, arg.HologID)
+	var i DeleteBookmarkByHologIdRow
+	err := row.Scan(&i.UserID, &i.HologID)
 	return i, err
 }
 
 const getBookmarkByUserIDAndPlaceID = `-- name: GetBookmarkByUserIDAndPlaceID :one
-SELECT user_id, place_id
-FROM public.bookmark
-WHERE user_id = $1 AND place_id = $2
+SELECT b.user_id, h.place_id
+FROM public.bookmark b
+JOIN public.holog h ON b.holog_id = h.id
+WHERE b.user_id = $1 AND h.place_id = $2
 `
 
 type GetBookmarkByUserIDAndPlaceIDParams struct {
 	UserID  string `json:"user_id"`
-	PlaceID int32  `json:"place_id"`
+	PlaceID string `json:"place_id"`
 }
 
 type GetBookmarkByUserIDAndPlaceIDRow struct {
 	UserID  string `json:"user_id"`
-	PlaceID int32  `json:"place_id"`
+	PlaceID string `json:"place_id"`
 }
 
 func (q *Queries) GetBookmarkByUserIDAndPlaceID(ctx context.Context, arg GetBookmarkByUserIDAndPlaceIDParams) (GetBookmarkByUserIDAndPlaceIDRow, error) {
@@ -55,26 +56,25 @@ func (q *Queries) GetBookmarkByUserIDAndPlaceID(ctx context.Context, arg GetBook
 	return i, err
 }
 
-const setBookmarkByPlaceId = `-- name: SetBookmarkByPlaceId :one
-INSERT INTO public.bookmark (user_id, place_id)
+const setBookmarkByHologId = `-- name: SetBookmarkByHologId :one
+INSERT INTO public.bookmark (user_id, holog_id)
 VALUES ($1, $2)
-ON CONFLICT (user_id, place_id) DO NOTHING
-RETURNING user_id, place_id
+RETURNING user_id, holog_id
 `
 
-type SetBookmarkByPlaceIdParams struct {
+type SetBookmarkByHologIdParams struct {
 	UserID  string `json:"user_id"`
-	PlaceID int32  `json:"place_id"`
+	HologID int32  `json:"holog_id"`
 }
 
-type SetBookmarkByPlaceIdRow struct {
+type SetBookmarkByHologIdRow struct {
 	UserID  string `json:"user_id"`
-	PlaceID int32  `json:"place_id"`
+	HologID int32  `json:"holog_id"`
 }
 
-func (q *Queries) SetBookmarkByPlaceId(ctx context.Context, arg SetBookmarkByPlaceIdParams) (SetBookmarkByPlaceIdRow, error) {
-	row := q.db.QueryRow(ctx, setBookmarkByPlaceId, arg.UserID, arg.PlaceID)
-	var i SetBookmarkByPlaceIdRow
-	err := row.Scan(&i.UserID, &i.PlaceID)
+func (q *Queries) SetBookmarkByHologId(ctx context.Context, arg SetBookmarkByHologIdParams) (SetBookmarkByHologIdRow, error) {
+	row := q.db.QueryRow(ctx, setBookmarkByHologId, arg.UserID, arg.HologID)
+	var i SetBookmarkByHologIdRow
+	err := row.Scan(&i.UserID, &i.HologID)
 	return i, err
 }

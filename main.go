@@ -149,6 +149,31 @@ func main() {
 		return api.ListHologsByUserID(c, q)
 	})
 
+	app.Get("/schedule/:user_id", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.GetSchedule(c, q)
+	})
+
+	app.Post("/schedule/create", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.CreateSchedule(c, q)
+	})
+
+	app.Post("/bookmark/set", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.SetBookmark(c, q)
+	})
+
+	app.Post("/bookmark/unset", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.UnsetBookmark(c, q)
+	})
+
+	app.Post("/bookmark/list", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.ListBookmark(c, q)
+	})
+
 	// app.Get("/bookmark/list", func(c *fiber.Ctx) error {
 	// 	if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 	// 	return api.FetchBookmarkList(c, q)

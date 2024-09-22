@@ -8,7 +8,7 @@ ORDER BY mention_count DESC
 LIMIT 20;
 
 -- name: ListHologsByPlaceId :many
-SELECT id, place_id, title, content, created_at, thumbnail_url, external_url
+SELECT id, place_id, title, content, created_at, external_url
 FROM public.holog
 WHERE place_id = $1 AND deleted_at IS NULL
 ORDER BY created_at DESC
@@ -20,12 +20,14 @@ FROM public.holog
 WHERE id = $1 AND deleted_at IS NULL;
 
 -- name: CreateHolog :one
-INSERT INTO public.holog (id, place_id, creator_id, schedule_id, type, title, content, thumbnail_url, image_url, external_url)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+INSERT INTO public.holog (place_id, creator_id, schedule_id, title, content, image_url)
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING id, place_id, creator_id, title, content, created_at;
 
 -- name: ListHologsByUserID :many
-SELECT id, place_id, creator_id, schedule_id, title, content, created_at, thumbnail_url, image_url, external_url
+SELECT id, place_id, creator_id, schedule_id, title, content, created_at, image_url, external_url
 FROM public.holog
 WHERE creator_id = $1 AND deleted_at IS NULL
 ORDER BY created_at DESC;
+
+-- TODO: TISTORY

@@ -15,7 +15,7 @@ type Querier interface {
 	CreateSchedule(ctx context.Context, arg CreateScheduleParams) (CreateScheduleRow, error)
 	CreateScheduleDetail(ctx context.Context, arg CreateScheduleDetailParams) (CreateScheduleDetailRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
-	DeleteBookmarkByPlaceId(ctx context.Context, arg DeleteBookmarkByPlaceIdParams) (DeleteBookmarkByPlaceIdRow, error)
+	DeleteBookmarkByHologId(ctx context.Context, arg DeleteBookmarkByHologIdParams) (DeleteBookmarkByHologIdRow, error)
 	DeleteScheduleDetail(ctx context.Context, arg DeleteScheduleDetailParams) (DeleteScheduleDetailRow, error)
 	GetBookmarkByUserIDAndPlaceID(ctx context.Context, arg GetBookmarkByUserIDAndPlaceIDParams) (GetBookmarkByUserIDAndPlaceIDRow, error)
 	GetHologByID(ctx context.Context, id uuid.UUID) (GetHologByIDRow, error)
@@ -28,7 +28,7 @@ type Querier interface {
 	ListHologsByPlaceId(ctx context.Context, arg ListHologsByPlaceIdParams) ([]ListHologsByPlaceIdRow, error)
 	ListHologsByUserID(ctx context.Context, creatorID string) ([]ListHologsByUserIDRow, error)
 	ListHologsMostByWeek(ctx context.Context) ([]ListHologsMostByWeekRow, error)
-	SetBookmarkByPlaceId(ctx context.Context, arg SetBookmarkByPlaceIdParams) (SetBookmarkByPlaceIdRow, error)
+	SetBookmarkByHologId(ctx context.Context, arg SetBookmarkByHologIdParams) (SetBookmarkByHologIdRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

@@ -41,6 +41,10 @@ sql:
               import: "gopkg.in/guregu/null.v4"
               package: "null"
               type: "Time"
+          - db_type: "date"
+            nullable: false
+            engine: "postgresql"
+            go_type: "time.Time"
           - db_type: "uuid"
             go_type: "github.com/google/uuid.UUID"
           - db_type: "text"

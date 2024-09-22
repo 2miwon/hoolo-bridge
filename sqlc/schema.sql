@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS public.users (
 CREATE TABLE IF NOT EXISTS public.schedule (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id TEXT NOT NULL,
-    start_date TIMESTAMP NOT NULL,
-    end_date TIMESTAMP NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
     created_at DATE DEFAULT CURRENT_DATE,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP,
@@ -51,7 +51,6 @@ CREATE TABLE IF NOT EXISTS public.holog (
     type TEXT NOT NULL DEFAULT 'holog', -- tistory / naver
     title TEXT NOT NULL,
     content TEXT NOT NULL,
-    thumbnail_url TEXT,
     image_url TEXT,
     external_url TEXT,
     created_at DATE DEFAULT CURRENT_DATE,
@@ -63,10 +62,10 @@ CREATE TABLE IF NOT EXISTS public.holog (
 CREATE TABLE IF NOT EXISTS public.bookmark (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id TEXT NOT NULL,
-    place_id INTEGER NOT NULL,
+    holog_id INTEGER NOT NULL,
 
     FOREIGN KEY (user_id) REFERENCES public.users(id),
-    FOREIGN KEY (place_id) REFERENCES public.holog(id)
+    FOREIGN KEY (holog_id) REFERENCES public.holog(id)
 );
 -- CREATE TABLE IF NOT EXISTS public.narration_style (
 --     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

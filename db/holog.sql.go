@@ -14,22 +14,18 @@ import (
 )
 
 const createHolog = `-- name: CreateHolog :one
-INSERT INTO public.holog (id, place_id, creator_id, schedule_id, type, title, content, thumbnail_url, image_url, external_url)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+INSERT INTO public.holog (place_id, creator_id, schedule_id, title, content, image_url)
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING id, place_id, creator_id, title, content, created_at
 `
 
 type CreateHologParams struct {
-	ID           uuid.UUID   `json:"id"`
-	PlaceID      string      `json:"place_id"`
-	CreatorID    string      `json:"creator_id"`
-	ScheduleID   pgtype.UUID `json:"schedule_id"`
-	Type         string      `json:"type"`
-	Title        string      `json:"title"`
-	Content      string      `json:"content"`
-	ThumbnailUrl *string     `json:"thumbnail_url"`
-	ImageUrl     *string     `json:"image_url"`
-	ExternalUrl  *string     `json:"external_url"`
+	PlaceID    string      `json:"place_id"`
+	CreatorID  string      `json:"creator_id"`
+	ScheduleID pgtype.UUID `json:"schedule_id"`
+	Title      string      `json:"title"`
+	Content    string      `json:"content"`
+	ImageUrl   *string     `json:"image_url"`
 }
 
 type CreateHologRow struct {
@@ -43,16 +39,12 @@ type CreateHologRow struct {
 
 func (q *Queries) CreateHolog(ctx context.Context, arg CreateHologParams) (CreateHologRow, error) {
 	row := q.db.QueryRow(ctx, createHolog,
-		arg.ID,
 		arg.PlaceID,
 		arg.CreatorID,
 		arg.ScheduleID,
-		arg.Type,
 		arg.Title,
 		arg.Content,
-		arg.ThumbnailUrl,
 		arg.ImageUrl,
-		arg.ExternalUrl,
 	)
 	var i CreateHologRow
 	err := row.Scan(
@@ -96,7 +88,7 @@ func (q *Queries) GetHologByID(ctx context.Context, id uuid.UUID) (GetHologByIDR
 }
 
 const listHologsByPlaceId = `-- name: ListHologsByPlaceId :many
-SELECT id, place_id, title, content, created_at, thumbnail_url, external_url
+SELECT id, place_id, title, content, created_at, external_url
 FROM public.holog
 WHERE place_id = $1 AND deleted_at IS NULL
 ORDER BY created_at DESC
@@ -109,13 +101,12 @@ type ListHologsByPlaceIdParams struct {
 }
 
 type ListHologsByPlaceIdRow struct {
-	ID           uuid.UUID `json:"id"`
-	PlaceID      string    `json:"place_id"`
-	Title        string    `json:"title"`
-	Content      string    `json:"content"`
-	CreatedAt    null.Time `json:"created_at"`
-	ThumbnailUrl *string   `json:"thumbnail_url"`
-	ExternalUrl  *string   `json:"external_url"`
+	ID          uuid.UUID `json:"id"`
+	PlaceID     string    `json:"place_id"`
+	Title       string    `json:"title"`
+	Content     string    `json:"content"`
+	CreatedAt   null.Time `json:"created_at"`
+	ExternalUrl *string   `json:"external_url"`
 }
 
 func (q *Queries) ListHologsByPlaceId(ctx context.Context, arg ListHologsByPlaceIdParams) ([]ListHologsByPlaceIdRow, error) {
@@ -133,7 +124,6 @@ func (q *Queries) ListHologsByPlaceId(ctx context.Context, arg ListHologsByPlace
 			&i.Title,
 			&i.Content,
 			&i.CreatedAt,
-			&i.ThumbnailUrl,
 			&i.ExternalUrl,
 		); err != nil {
 			return nil, err
@@ -147,23 +137,22 @@ func (q *Queries) ListHologsByPlaceId(ctx context.Context, arg ListHologsByPlace
 }
 
 const listHologsByUserID = `-- name: ListHologsByUserID :many
-SELECT id, place_id, creator_id, schedule_id, title, content, created_at, thumbnail_url, image_url, external_url
+SELECT id, place_id, creator_id, schedule_id, title, content, created_at, image_url, external_url
 FROM public.holog
 WHERE creator_id = $1 AND deleted_at IS NULL
 ORDER BY created_at DESC
 `
 
 type ListHologsByUserIDRow struct {
-	ID           uuid.UUID   `json:"id"`
-	PlaceID      string      `json:"place_id"`
-	CreatorID    string      `json:"creator_id"`
-	ScheduleID   pgtype.UUID `json:"schedule_id"`
-	Title        string      `json:"title"`
-	Content      string      `json:"content"`
-	CreatedAt    null.Time   `json:"created_at"`
-	ThumbnailUrl *string     `json:"thumbnail_url"`
-	ImageUrl     *string     `json:"image_url"`
-	ExternalUrl  *string     `json:"external_url"`
+	ID          uuid.UUID   `json:"id"`
+	PlaceID     string      `json:"place_id"`
+	CreatorID   string      `json:"creator_id"`
+	ScheduleID  pgtype.UUID `json:"schedule_id"`
+	Title       string      `json:"title"`
+	Content     string      `json:"content"`
+	CreatedAt   null.Time   `json:"created_at"`
+	ImageUrl    *string     `json:"image_url"`
+	ExternalUrl *string     `json:"external_url"`
 }
 
 func (q *Queries) ListHologsByUserID(ctx context.Context, creatorID string) ([]ListHologsByUserIDRow, error) {
@@ -183,7 +172,6 @@ func (q *Queries) ListHologsByUserID(ctx context.Context, creatorID string) ([]L
 			&i.Title,
 			&i.Content,
 			&i.CreatedAt,
-			&i.ThumbnailUrl,
 			&i.ImageUrl,
 			&i.ExternalUrl,
 		); err != nil {
