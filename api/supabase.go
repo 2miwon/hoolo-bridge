@@ -60,7 +60,7 @@ func UploadBucketSupabase(c *fiber.Ctx) error {
     storageClient := storage_go.NewClient(os.Getenv("BUCKET_ENDPOINT"), os.Getenv("BUCKET_SECRET_ACCESS_KEY"), nil)
 
     // Define the bucket and the path where you want to store the file
-    // bucketName := "hoolo_image"
+    bucketName := "hoolo_image"
     filePath := fmt.Sprintf("uploads/%s", file.Filename)
 
     // resp, err := storageClient.CreateSignedUploadUrl(bucketName, file.Filename)
@@ -79,7 +79,7 @@ func UploadBucketSupabase(c *fiber.Ctx) error {
     //     })
     // }
 
-    result, err := storageClient.UploadFile("", filePath, fileContent)
+    result, err := storageClient.UploadFile(bucketName, bucketName + filePath, fileContent)
     if err != nil {
         log.Printf("Failed to upload file to Supabase: %v", err)
         return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
