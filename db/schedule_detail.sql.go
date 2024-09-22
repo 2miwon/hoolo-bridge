@@ -9,13 +9,13 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
+	null "gopkg.in/guregu/null.v4"
 )
 
 const createScheduleDetail = `-- name: CreateScheduleDetail :one
-SELECT id, schedule_id, place_id, updated_at
-FROM public.schedule_detail
-WHERE schedule_id = $1 AND place_id = $2 AND deleted_at IS NULL
+INSERT INTO public.schedule_detail (schedule_id, place_id)
+VALUES ($1, $2)
+RETURNING id, schedule_id, place_id, created_at
 `
 
 type CreateScheduleDetailParams struct {
@@ -24,10 +24,10 @@ type CreateScheduleDetailParams struct {
 }
 
 type CreateScheduleDetailRow struct {
-	ID         uuid.UUID        `json:"id"`
-	ScheduleID uuid.UUID        `json:"schedule_id"`
-	PlaceID    string           `json:"place_id"`
-	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
+	ID         uuid.UUID `json:"id"`
+	ScheduleID uuid.UUID `json:"schedule_id"`
+	PlaceID    string    `json:"place_id"`
+	CreatedAt  null.Time `json:"created_at"`
 }
 
 func (q *Queries) CreateScheduleDetail(ctx context.Context, arg CreateScheduleDetailParams) (CreateScheduleDetailRow, error) {
@@ -37,7 +37,7 @@ func (q *Queries) CreateScheduleDetail(ctx context.Context, arg CreateScheduleDe
 		&i.ID,
 		&i.ScheduleID,
 		&i.PlaceID,
-		&i.UpdatedAt,
+		&i.CreatedAt,
 	)
 	return i, err
 }
@@ -46,7 +46,7 @@ const deleteScheduleDetail = `-- name: DeleteScheduleDetail :one
 UPDATE public.schedule_detail
 SET deleted_at = NOW()
 WHERE schedule_id = $1 AND place_id = $2
-RETURNING id, schedule_id, place_id, updated_at
+RETURNING id, schedule_id, place_id, created_at
 `
 
 type DeleteScheduleDetailParams struct {
@@ -55,10 +55,10 @@ type DeleteScheduleDetailParams struct {
 }
 
 type DeleteScheduleDetailRow struct {
-	ID         uuid.UUID        `json:"id"`
-	ScheduleID uuid.UUID        `json:"schedule_id"`
-	PlaceID    string           `json:"place_id"`
-	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
+	ID         uuid.UUID `json:"id"`
+	ScheduleID uuid.UUID `json:"schedule_id"`
+	PlaceID    string    `json:"place_id"`
+	CreatedAt  null.Time `json:"created_at"`
 }
 
 func (q *Queries) DeleteScheduleDetail(ctx context.Context, arg DeleteScheduleDetailParams) (DeleteScheduleDetailRow, error) {
@@ -68,22 +68,22 @@ func (q *Queries) DeleteScheduleDetail(ctx context.Context, arg DeleteScheduleDe
 		&i.ID,
 		&i.ScheduleID,
 		&i.PlaceID,
-		&i.UpdatedAt,
+		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getMyScheduleDetailsByScheduleId = `-- name: GetMyScheduleDetailsByScheduleId :many
-SELECT id, schedule_id, place_id, updated_at
+SELECT id, schedule_id, place_id, created_at
 FROM public.schedule_detail
 WHERE schedule_id = $1 AND deleted_at IS NULL
 `
 
 type GetMyScheduleDetailsByScheduleIdRow struct {
-	ID         uuid.UUID        `json:"id"`
-	ScheduleID uuid.UUID        `json:"schedule_id"`
-	PlaceID    string           `json:"place_id"`
-	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
+	ID         uuid.UUID `json:"id"`
+	ScheduleID uuid.UUID `json:"schedule_id"`
+	PlaceID    string    `json:"place_id"`
+	CreatedAt  null.Time `json:"created_at"`
 }
 
 func (q *Queries) GetMyScheduleDetailsByScheduleId(ctx context.Context, scheduleID uuid.UUID) ([]GetMyScheduleDetailsByScheduleIdRow, error) {
@@ -99,7 +99,7 @@ func (q *Queries) GetMyScheduleDetailsByScheduleId(ctx context.Context, schedule
 			&i.ID,
 			&i.ScheduleID,
 			&i.PlaceID,
-			&i.UpdatedAt,
+			&i.CreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -112,7 +112,7 @@ func (q *Queries) GetMyScheduleDetailsByScheduleId(ctx context.Context, schedule
 }
 
 const getScheduleDetailByScheduleIdAndPlaceId = `-- name: GetScheduleDetailByScheduleIdAndPlaceId :one
-SELECT id, schedule_id, place_id, updated_at
+SELECT id, schedule_id, place_id, created_at
 FROM public.schedule_detail
 WHERE schedule_id = $1 AND place_id = $2 AND deleted_at IS NULL
 `
@@ -123,10 +123,10 @@ type GetScheduleDetailByScheduleIdAndPlaceIdParams struct {
 }
 
 type GetScheduleDetailByScheduleIdAndPlaceIdRow struct {
-	ID         uuid.UUID        `json:"id"`
-	ScheduleID uuid.UUID        `json:"schedule_id"`
-	PlaceID    string           `json:"place_id"`
-	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
+	ID         uuid.UUID `json:"id"`
+	ScheduleID uuid.UUID `json:"schedule_id"`
+	PlaceID    string    `json:"place_id"`
+	CreatedAt  null.Time `json:"created_at"`
 }
 
 func (q *Queries) GetScheduleDetailByScheduleIdAndPlaceId(ctx context.Context, arg GetScheduleDetailByScheduleIdAndPlaceIdParams) (GetScheduleDetailByScheduleIdAndPlaceIdRow, error) {
@@ -136,7 +136,7 @@ func (q *Queries) GetScheduleDetailByScheduleIdAndPlaceId(ctx context.Context, a
 		&i.ID,
 		&i.ScheduleID,
 		&i.PlaceID,
-		&i.UpdatedAt,
+		&i.CreatedAt,
 	)
 	return i, err
 }

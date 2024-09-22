@@ -13,13 +13,12 @@ import (
 )
 
 const createSchedule = `-- name: CreateSchedule :one
-INSERT INTO public.schedule (id, user_id, start_date, end_date)
-VALUES ($1, $2, $3, $4)
+INSERT INTO public.schedule (user_id, start_date, end_date)
+VALUES ($1, $2, $3)
 RETURNING id, user_id, start_date, end_date
 `
 
 type CreateScheduleParams struct {
-	ID        uuid.UUID `json:"id"`
 	UserID    string    `json:"user_id"`
 	StartDate time.Time `json:"start_date"`
 	EndDate   time.Time `json:"end_date"`
@@ -33,12 +32,7 @@ type CreateScheduleRow struct {
 }
 
 func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) (CreateScheduleRow, error) {
-	row := q.db.QueryRow(ctx, createSchedule,
-		arg.ID,
-		arg.UserID,
-		arg.StartDate,
-		arg.EndDate,
-	)
+	row := q.db.QueryRow(ctx, createSchedule, arg.UserID, arg.StartDate, arg.EndDate)
 	var i CreateScheduleRow
 	err := row.Scan(
 		&i.ID,

@@ -34,6 +34,21 @@ sql:
               import: "gopkg.in/guregu/null.v4"
               package: "null"
               type: "Time"
+          - db_type: "timestamp"
+            nullable: false
+            engine: "postgresql"
+            go_type: "time.Time"
+          - db_type: "timestamptz"
+            nullable: false
+            engine: "postgresql"
+            go_type: "time.Time"
+          - db_type: "time"
+            nullable: true
+            engine: "postgresql"
+            go_type:
+              import: "gopkg.in/guregu/null.v4"
+              package: "null"
+              type: "Time"
           - db_type: "date"
             nullable: true
             engine: "postgresql"

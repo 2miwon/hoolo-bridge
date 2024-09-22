@@ -55,7 +55,6 @@ type ScheduleDetail struct {
 	ScheduleID uuid.UUID        `json:"schedule_id"`
 	PlaceID    string           `json:"place_id"`
 	CreatedAt  null.Time        `json:"created_at"`
-	UpdatedAt  pgtype.Timestamp `json:"updated_at"`
 	DeletedAt  pgtype.Timestamp `json:"deleted_at"`
 }
 

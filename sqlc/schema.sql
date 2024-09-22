@@ -37,9 +37,7 @@ CREATE TABLE IF NOT EXISTS public.schedule_detail (
     schedule_id UUID NOT NULL,
     place_id TEXT NOT NULL,
     created_at DATE DEFAULT CURRENT_DATE,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP,
-
     FOREIGN KEY (schedule_id) REFERENCES public.schedule(id)
 );
 

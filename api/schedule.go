@@ -16,7 +16,7 @@ import (
 // @Success 200 {object} db.GetScheduleByUserIDRow
 // @Failure 400
 // @Failure 500
-// @Router /schedule/:id [get]
+// @Router /schedule/:user_id [get]
 func GetSchedule(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 

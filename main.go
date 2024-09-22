@@ -144,7 +144,7 @@ func main() {
 		return api.CreateHolog(c, q)
 	})
 
-	app.Get("/holog/:userId", func(c *fiber.Ctx) error {
+	app.Get("/holog/:user_id", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 		return api.ListHologsByUserID(c, q)
 	})
@@ -157,6 +157,26 @@ func main() {
 	app.Post("/schedule/create", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 		return api.CreateSchedule(c, q)
+	})
+
+	app.Get("/schedule/detail/:schedule_id", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.GetScheduleDetail(c, q)
+	})
+
+	app.Post("/schedule/detail/place", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.GetScheduleDetailByPlaceID(c, q)
+	})
+
+	app.Post("/schedule/detail/create", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.CreateScheduleDetail(c, q)
+	})
+
+	app.Post("/schedule/detail/delete", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.DeleteScheduleDetail(c, q)
 	})
 
 	app.Post("/bookmark/set", func(c *fiber.Ctx) error {
