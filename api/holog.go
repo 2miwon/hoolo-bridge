@@ -2,18 +2,25 @@ package api
 
 import (
 	"context"
+	"encoding/json"
 	"log"
+	"os"
 
 	"github.com/2miwon/hoolo-bridge/db"
 	"github.com/gofiber/fiber/v2"
 )
+
+type PlaceRecentResponse struct {
+    db.ListHologsMostByWeekRow
+    PlaceDetail PlaceDetailResponse `json:"place_detail"`
+}
 
 // @Summary 최근 일주일간 가장 많이 홀로그가 생성된 장소 id 리스트 가져오기
 // @Description Get most mentioned place list in the last week
 // @Tags place
 // @Accept json
 // @Produce json
-// @Success 200 {object} []db.ListHologsMostByWeekRow
+// @Success 200 {object} []PlaceRecentResponse
 // @Failure 404
 // @Failure 400
 // @Router /place/recent [get]
@@ -28,7 +35,47 @@ func FetchMostPlaceList(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
-	return c.JSON(list)
+	rst := make([]PlaceRecentResponse, len(list))
+	base_url := os.Getenv("OPENAPI_COMMON")
+
+	for i := 0; i < len(list); i++ {
+		content_id := list[i].PlaceID
+
+		url := base_url + "&contentId=" + content_id
+
+		resp, err := GetRequest(c, ctx, url)
+		if err != nil {
+			log.Printf("Error fetching place detail: %v", err)
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": "Place detail not exist",
+			})
+		}
+
+    	placeDetail := OpenApiParser(c, resp)
+
+		placeDetailJSON, err := json.Marshal(placeDetail)
+    	if err != nil {
+    	    log.Printf("Error marshalling place detail: %v", err)
+    	    return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+    	        "error": "Failed to marshal place detail",
+    	    })
+    	}
+
+    	var place PlaceDetailResponse
+    	if err := json.Unmarshal(placeDetailJSON, &place); err != nil {
+    	    log.Printf("Error unmarshalling place detail: %v", err)
+    	    return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+    	        "error": "Failed to parse place detail",
+    	    })
+    	}
+
+		rst[i] = PlaceRecentResponse{
+			ListHologsMostByWeekRow: list[i],
+			PlaceDetail: place,
+		}
+	}
+
+	return c.JSON(rst)
 }
 
 // @Summary 특정 장소와 관련된 홀로그 리스트 가져오기 (최신순)

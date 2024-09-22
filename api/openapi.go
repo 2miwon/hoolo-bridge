@@ -9,7 +9,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/2miwon/hoolo-bridge/db"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -33,7 +32,7 @@ type PlaceListResponse struct {
 // @Failure 404
 // @Failure 400
 // @Router /place/list [get]
-func FetchRandomPlaceList(c *fiber.Ctx, q *db.Queries, n int) error {
+func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 	base_url := os.Getenv("OPENAPI_LOCATION")
 	
@@ -81,7 +80,7 @@ type PlaceDetailResponse struct {
 // @Failure 404
 // @Failure 400
 // @Router /place/detail/{id} [get]
-func FetchPlaceDetail(c *fiber.Ctx, q *db.Queries) error {
+func FetchPlaceDetail(c *fiber.Ctx) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 	base_url := os.Getenv("OPENAPI_COMMON")
 
@@ -113,7 +112,7 @@ func FetchPlaceDetail(c *fiber.Ctx, q *db.Queries) error {
 // @Failure 404
 // @Failure 400
 // @Router /place/search/{keyword} [get]
-func SearchPlace(c *fiber.Ctx, q *db.Queries) error {
+func SearchPlace(c *fiber.Ctx) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 	base_url := os.Getenv("OPENAPI_SEARCH")
 

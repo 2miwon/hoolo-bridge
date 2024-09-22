@@ -117,22 +117,21 @@ func main() {
 
 	app.Get("/place/list", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
-		return api.FetchRandomPlaceList(c, q, 10)
+		return api.FetchRandomPlaceList(c, 10)
 	})
 
 	app.Get("/place/detail/:id", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
-		return api.FetchPlaceDetail(c, q)
+		return api.FetchPlaceDetail(c)
 	})
 
 	app.Get("/place/recent", func(c *fiber.Ctx) error {
-		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 		return api.FetchMostPlaceList(c, q)
 	})
 
 	app.Get("/place/search/:keyword", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
-		return api.SearchPlace(c, q)
+		return api.SearchPlace(c)
 	})
 
 	app.Get("/holog/relate/:id", func(c *fiber.Ctx) error {
