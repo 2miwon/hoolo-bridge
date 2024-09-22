@@ -65,6 +65,11 @@ func CreateSchedule(c *fiber.Ctx, q *db.Queries) error {
         })
     }
 
+	log.Printf("Start Date: %v", req.StartDate)
+	log.Printf("End Date: %v", req.EndDate)
+	log.Printf("Start Date: %v", req.StartDate.In(loc))
+	log.Printf("End Date: %v", req.EndDate.In(loc))
+
 	res, err := q.CreateSchedule(ctx, db.CreateScheduleParams{
 		UserID:    req.UserID,
 		StartDate: req.StartDate.In(loc),
