@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"log"
 
 	"github.com/2miwon/hoolo-bridge/db"
 	"github.com/gofiber/fiber/v2"
@@ -24,6 +25,7 @@ func GetSchedule(c *fiber.Ctx, q *db.Queries) error {
 
 	res, err := q.GetScheduleByUserID(ctx, userID)
 	if err != nil {
+		log.Printf("Failed to get schedule: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to get schedule",
 		})
@@ -47,6 +49,7 @@ func CreateSchedule(c *fiber.Ctx, q *db.Queries) error {
 
 	var req db.CreateScheduleParams
 	if err := c.BodyParser(&req); err != nil {
+		log.Printf("Failed to parse request: %v", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Failed to parse request",
 		})
@@ -54,6 +57,7 @@ func CreateSchedule(c *fiber.Ctx, q *db.Queries) error {
 
 	res, err := q.CreateSchedule(ctx, req)
 	if err != nil {
+		log.Printf("Failed to create schedule: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to create schedule",
 		})
