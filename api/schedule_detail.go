@@ -18,7 +18,7 @@ import (
 // @Success 200 {object} []db.GetMyScheduleDetailsByScheduleIdRow
 // @Failure 400
 // @Failure 500
-// @Router /schedule/detail/:schedule_id [get]
+// @Router /schedule/detail/ [get]
 func GetScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 

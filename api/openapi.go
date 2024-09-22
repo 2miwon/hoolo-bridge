@@ -39,7 +39,7 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	result := make([]map[string]interface{}, 0, n)
 
-	for len(result) < 10 {
+	for len(result) < n {
 		pageNo := r.Intn(246) + 1
 		url := base_url + "&pageNo=" + fmt.Sprintf("%d", pageNo)
 
@@ -63,7 +63,7 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
 
     	    if photo, ok := data["firstimage"]; ok && photo != "" {
     	        result = append(result, data)
-    	        if len(result) >= 10 {
+    	        if len(result) >= n {
     	            break
     	        }
     	    }
@@ -93,7 +93,7 @@ type PlaceDetailResponse struct {
 // @Success 200 {object} PlaceDetailResponse
 // @Failure 404
 // @Failure 400
-// @Router /place/detail/{id} [get]
+// @Router /place/detail/ [get]
 func FetchPlaceDetail(c *fiber.Ctx) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 	base_url := os.Getenv("OPENAPI_COMMON")
@@ -125,7 +125,7 @@ func FetchPlaceDetail(c *fiber.Ctx) error {
 // @Success 200 {object} []PlaceListResponse
 // @Failure 404
 // @Failure 400
-// @Router /place/search/{keyword} [get]
+// @Router /place/search/ [get]
 func SearchPlace(c *fiber.Ctx) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 	base_url := os.Getenv("OPENAPI_SEARCH")
