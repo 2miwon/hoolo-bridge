@@ -96,7 +96,7 @@ type PlaceDetailResponse struct {
 // @Success 200 {object} PlaceDetailResponse
 // @Failure 404
 // @Failure 400
-// @Router /place/detail/ [get]
+// @Router /place/detail/{id} [get]
 func FetchPlaceDetail(c *fiber.Ctx) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 	base_url := os.Getenv("OPENAPI_COMMON")
@@ -132,14 +132,14 @@ func FetchPlaceDetail(c *fiber.Ctx) error {
 // @Success 200 {object} []PlaceListResponse
 // @Failure 404
 // @Failure 400
-// @Router /place/search/ [get]
+// @Router /place/search/{id} [get]
 func SearchPlace(c *fiber.Ctx) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 	base_url := os.Getenv("OPENAPI_SEARCH")
 
 	keyword := c.Params("keyword")
 	// encodedKeyword := url.QueryEscape(keyword)
-	url := base_url + "&numOfRows=16&pageNo=1&keyword=" + keyword
+	url := base_url + "&numOfRows=8&pageNo=1&keyword=" + keyword
 
 	resp, err := GetRequest(c, ctx, url)
 	if err != nil {
