@@ -53,6 +53,10 @@ func FetchMostPlaceList(c *fiber.Ctx, q *db.Queries) error {
 		}
 
     	placeDetail := OpenApiParser(c, resp)
+		if placeDetail == nil {
+			log.Printf("Error parsing data: %v", placeDetail)
+			return c.JSON([]PlaceRecentResponse{})
+		}
 
 		placeDetailJSON, err := json.Marshal(placeDetail)
     	if err != nil {

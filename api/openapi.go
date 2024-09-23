@@ -51,6 +51,10 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
 		}
 
 		parsed := OpenApiParser(c, resp)
+		if parsed == nil {
+			log.Printf("Error parsing data: %v", parsed)
+			return c.JSON([]PlaceRecentResponse{})
+		}
 		
 		for _, item := range parsed {
     	    // data를 map[string]interface{} 타입으로 변환
@@ -108,11 +112,15 @@ func FetchPlaceDetail(c *fiber.Ctx) error {
 		})
 	}
 
-	result := OpenApiParser(c, resp)[0]
+	result := OpenApiParser(c, resp)
+	if result == nil {
+		log.Printf("Error parsing data: %v", result)
+		return c.JSON([]PlaceRecentResponse{})
+	}
 
 	log.Printf("place detail: %v", result)
 	
-	return c.JSON(result)
+	return c.JSON(result[0])
 }
 
 // @Summary 장소 키워드로 검색하기 (장소명)
@@ -142,6 +150,10 @@ func SearchPlace(c *fiber.Ctx) error {
 	}
 
 	parsed := OpenApiParser(c, resp)
+	if parsed == nil {
+		log.Printf("Error parsing data: %v", parsed)
+		return c.JSON([]PlaceRecentResponse{})
+	}
 
 	return c.JSON(parsed)
 }

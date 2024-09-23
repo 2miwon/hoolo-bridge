@@ -53,22 +53,26 @@ func GetRequest(c *fiber.Ctx, ctx context.Context, url string) (map[string]inter
 func OpenApiParser(c *fiber.Ctx, decode_resp map[string]interface{}) []interface{} {
 	response, ok := decode_resp["response"].(map[string]interface{})
     if !ok {
-        log.Fatalf("Type assertion failed for 'response'")
+        log.Printf("Type assertion failed for 'response'")
+        return nil
     }
 
     body, ok := response["body"].(map[string]interface{})
     if !ok {
-        log.Fatalf("Type assertion failed for 'body'")
+        log.Printf("Type assertion failed for 'body'")
+        return nil
     }
 
     items, ok := body["items"].(map[string]interface{})
     if !ok {
-        log.Fatalf("Type assertion failed for 'items'")
+        log.Printf("Type assertion failed for 'items'")
+        return nil
     }
 
     item, ok := items["item"].([]interface{})
     if !ok {
-        log.Fatalf("Type assertion failed for 'item'")
+        log.Printf("Type assertion failed for 'item'")
+        return nil
     }
 
 	return item
