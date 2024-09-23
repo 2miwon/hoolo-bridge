@@ -75,7 +75,7 @@ func (q *Queries) GetScheduleByUserID(ctx context.Context, userID string) (GetSc
 
 const updateSchedule = `-- name: UpdateSchedule :one
 UPDATE public.schedule
-SET start_date = $2, end_date = $3
+SET start_date = $2, end_date = $3, updated_at = NOW()
 WHERE id = $1
 RETURNING id, user_id, start_date, end_date
 `

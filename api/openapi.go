@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"net/url"
 	"os"
 	"time"
 
@@ -130,9 +129,9 @@ func SearchPlace(c *fiber.Ctx) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 	base_url := os.Getenv("OPENAPI_SEARCH")
 
-	keyword := c.Query("keyword")
-	encodedKeyword := url.QueryEscape(keyword)
-	url := base_url + "&numOfRows=16&pageNo=1&keyword=" + encodedKeyword
+	keyword := c.Params("keyword")
+	// encodedKeyword := url.QueryEscape(keyword)
+	url := base_url + "&numOfRows=16&pageNo=1&keyword=" + keyword
 
 	resp, err := GetRequest(c, ctx, url)
 	if err != nil {

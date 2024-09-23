@@ -63,6 +63,17 @@ func UploadBucketSupabase(c *fiber.Ctx) error {
     bucketName := "hoolo_image"
     filePath := fmt.Sprintf("uploads/%s", file.Filename)
 
+    // check 
+    _, err = storageClient.CreateBucket("bucket-id", storage_go.BucketOptions{
+        Public: true,
+    })
+    if err != nil {
+        log.Printf("Failed to create bucket: %v", err)
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "error": "Failed to create bucket",
+        })
+    }
+
     // resp, err := storageClient.CreateSignedUploadUrl(bucketName, file.Filename)
     // if err != nil {
     //     log.Printf("Failed to get signed URL: %v", err)
@@ -79,7 +90,7 @@ func UploadBucketSupabase(c *fiber.Ctx) error {
     //     })
     // }
 
-    result, err := storageClient.UploadFile(bucketName, bucketName + filePath, fileContent)
+    uploadResponse, err := storageClient.UploadFile(bucketName, bucketName + "/" + filePath, fileContent)
     if err != nil {
         log.Printf("Failed to upload file to Supabase: %v", err)
         return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -87,7 +98,7 @@ func UploadBucketSupabase(c *fiber.Ctx) error {
         })
     }
 
-    return c.JSON(result)
+    return c.JSON(uploadResponse)
 }
 
 // @Summary 파일 업로드 with S3
