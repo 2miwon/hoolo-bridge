@@ -1,28 +1,24 @@
 package api
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/credentials"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gofiber/fiber/v2"
 	storage_go "github.com/supabase-community/storage-go"
 )
 
-var s3Client *s3.Client
+// var s3Client *s3.Client
 
-func InitS3Client() {
-    s3Client = s3.New(s3.Options{
-        EndpointResolver: s3.EndpointResolverFromURL(os.Getenv("BUCKET_ENDPOINT")),
-        Region:           "ap-northeast-2",
-        Credentials:      aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(os.Getenv("BUCKET_ACCESS_KEY"), os.Getenv("BUCKET_SECRET_ACCESS_KEY"), "")),
-        UsePathStyle:     true,
-    })
-}
+// func InitS3Client() {
+//     s3Client = s3.New(s3.Options{
+//         EndpointResolver: s3.EndpointResolverFromURL(os.Getenv("BUCKET_ENDPOINT")),
+//         Region:           "ap-northeast-2",
+//         Credentials:      aws.NewCredentialsCache(credentials.NewStaticCredentialsProvider(os.Getenv("BUCKET_ACCESS_KEY"), os.Getenv("BUCKET_SECRET_ACCESS_KEY"), "")),
+//         UsePathStyle:     true,
+//     })
+// }
 
 type UploadResponse struct {
     Message string `json:"message"`
@@ -111,43 +107,43 @@ func UploadBucketSupabase(c *fiber.Ctx) error {
 // @Failure 400
 // @Failure 500
 // @Router /upload/s3 [post]
-func UploadBucket(c *fiber.Ctx) error {
-    file, err := c.FormFile("file")
-    if err != nil {
-        log.Printf("Failed to get file from request: %v", err)
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": "Failed to get file from request",
-        })
-    }
+// func UploadBucket(c *fiber.Ctx) error {
+//     file, err := c.FormFile("file")
+//     if err != nil {
+//         log.Printf("Failed to get file from request: %v", err)
+//         return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+//             "error": "Failed to get file from request",
+//         })
+//     }
 
-    fileContent, err := file.Open()
-    if err != nil {
-        log.Printf("Failed to open file: %v", err)
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": "Failed to open file",
-        })
-    }
-    defer fileContent.Close()
+//     fileContent, err := file.Open()
+//     if err != nil {
+//         log.Printf("Failed to open file: %v", err)
+//         return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+//             "error": "Failed to open file",
+//         })
+//     }
+//     defer fileContent.Close()
 
-    bucketName := "hoolo_image"
-    filePath := fmt.Sprintf("uploads/%s", file.Filename)
+//     bucketName := "hoolo_image"
+//     filePath := fmt.Sprintf("uploads/%s", file.Filename)
 
-    _, err = s3Client.PutObject(context.TODO(), &s3.PutObjectInput{
-        Bucket: aws.String(bucketName),
-        Key:    aws.String(filePath),
-        Body:   fileContent,
-    })
-    if err != nil {
-        log.Printf("Failed to upload file to Supabase: %v", err)
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": "Failed to upload file to Supabase",
-        })
-    }
+//     _, err = s3Client.PutObject(context.TODO(), &s3.PutObjectInput{
+//         Bucket: aws.String(bucketName),
+//         Key:    aws.String(filePath),
+//         Body:   fileContent,
+//     })
+//     if err != nil {
+//         log.Printf("Failed to upload file to Supabase: %v", err)
+//         return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+//             "error": "Failed to upload file to Supabase",
+//         })
+//     }
 
-    fileURL := fmt.Sprintf("https://project_ref.supabase.co/storage/v1/object/public/%s/%s", bucketName, filePath)
+//     fileURL := fmt.Sprintf("https://project_ref.supabase.co/storage/v1/object/public/%s/%s", bucketName, filePath)
 
-    return c.JSON(UploadResponse{
-        Message: "File uploaded successfully",
-        URL:     fileURL,
-    })
-}
+//     return c.JSON(UploadResponse{
+//         Message: "File uploaded successfully",
+//         URL:     fileURL,
+//     })
+// }

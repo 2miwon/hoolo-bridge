@@ -64,8 +64,6 @@ func main() {
 	utils.CheckErr(err)
 	defer pool.Close()
 
-	api.InitS3Client()
-
 	q := db.New(pool)
 
 	app := fiber.New()
@@ -212,7 +210,8 @@ func main() {
 	})
 	
 	app.Post("/upload", api.UploadBucketSupabase)
-	app.Post("/upload/s3", api.UploadBucket)
+	app.Get("/upload/s3", api.UploadS3)
+	// app.Post("/upload/imgbb", api.ImgBBUpload)
 
 	app.Listen(":3000")
 }
