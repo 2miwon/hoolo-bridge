@@ -147,6 +147,7 @@ type DeleteRespnse struct {
 // @Success 200 {object} DeleteRespnse
 // @Failure 400
 // @Failure 500
+// @Router /user/resign [post]
 func Resign(c *fiber.Ctx, q *db.Queries) error {
     ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
