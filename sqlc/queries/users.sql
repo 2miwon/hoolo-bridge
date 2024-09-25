@@ -14,8 +14,7 @@ FROM public.users
 WHERE id = $1 AND deleted_at IS NULL;
 
 -- name: DeleteUserByID :one
-UPDATE public.users
-SET deleted_at = NOW()
+DELETE FROM public.users
 WHERE id = $1
 RETURNING id, username;
 
