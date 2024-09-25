@@ -115,6 +115,11 @@ func main() {
 		return api.FetchMyInfo(c, q)
 	})
 
+	app.Post("/user/resign", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.Resign(c, q)
+	})
+
 	app.Get("/place/list", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 		return api.FetchRandomPlaceList(c, 5)
