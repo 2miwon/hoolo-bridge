@@ -154,7 +154,7 @@ func main() {
 		return api.DeleteHolog(c, q)
 	})
 	
-	app.POST("/holog/hide", func(c *fiber.Ctx) error {
+	app.Post("/holog/hide", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 		return api.HideHolog(c, q)
 	})

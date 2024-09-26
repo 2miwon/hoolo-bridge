@@ -225,7 +225,7 @@ func DeleteHolog(c *fiber.Ctx, q *db.Queries) error {
 // @Accept json
 // @Produce json
 // @Param HideHologByIDParams body db.HideHologByIDParams true "HideHolog Request"
-// @Success 200 {object} db.HideHologByIDRow
+// @Success 200 {object} db.Bookmark
 // @Failure 404
 // @Failure 400
 // @Router /holog/hide [post]
