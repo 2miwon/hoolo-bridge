@@ -164,6 +164,11 @@ func main() {
 		return api.ListHologsByUserID(c, q)
 	})
 
+	app.Post("/holog/user/place", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.ListHologsByUserIdPlaceId(c, q)
+	})
+
 	app.Get("/schedule/:user_id", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 		return api.GetSchedule(c, q)

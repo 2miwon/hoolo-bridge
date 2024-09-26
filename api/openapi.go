@@ -62,7 +62,7 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
 
 		refine := make(map[string]interface{})
 		refine["addr1"] = items["roadaddress"]
-		refine["contentid"] = items["contentsidd"]
+		refine["contentid"] = items["contentsid"]
 		repPhoto, ok := items["repPhoto"].(map[string]interface{})
     	if !ok {
     	    refine["firstimage"] = ""
@@ -71,8 +71,7 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
 			return c.JSON([]PlaceListResponse{})
     	}
 
-    	// photoid 키 확인 및 타입 변환
-    	photoid, ok := repPhoto["photoid"].(map[string]interface{})
+		photoid, ok := repPhoto["photoid"].(map[string]interface{})
     	if !ok {
     	    refine["firstimage"] = ""
 			refine["firstimage2"] = ""
@@ -81,7 +80,7 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
     	}
 
 		refine["firstimage"] = photoid["thumbnailpath"]
-		refine["firstimage2"] = photoid["imagepath"]
+		refine["firstimage2"] = photoid["imgpath"]
 		refine["mapx"] = items["latitude"]
 		refine["mapy"] = items["longitude"]
 		phoneno, exists := items["phoneno"]
