@@ -26,6 +26,7 @@ type Querier interface {
 	GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEmailAndPasswordParams) (GetUserByEmailAndPasswordRow, error)
 	GetUserByID(ctx context.Context, id string) (GetUserByIDRow, error)
 	HardDeleteUserByID(ctx context.Context, id string) (HardDeleteUserByIDRow, error)
+	HideHologByID(ctx context.Context, arg HideHologByIDParams) (Bookmark, error)
 	ListAnnounces(ctx context.Context) ([]ListAnnouncesRow, error)
 	ListHologsByPlaceId(ctx context.Context, arg ListHologsByPlaceIdParams) ([]ListHologsByPlaceIdRow, error)
 	ListHologsByUserID(ctx context.Context, creatorID string) ([]ListHologsByUserIDRow, error)

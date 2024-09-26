@@ -149,6 +149,16 @@ func main() {
 		return api.CreateHolog(c, q)
 	})
 
+	app.Post("/holog/delete", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.DeleteHolog(c, q)
+	})
+	
+	app.POST("/holog/hide", func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.HideHolog(c, q)
+	})
+
 	app.Get("/holog/:user_id", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 		return api.ListHologsByUserID(c, q)

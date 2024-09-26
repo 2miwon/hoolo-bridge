@@ -91,7 +91,9 @@ func (q *Queries) DeleteHologByID(ctx context.Context, id uuid.UUID) (DeleteHolo
 const getHologByID = `-- name: GetHologByID :one
 SELECT id, place_id, title, content, created_at, image_url
 FROM public.holog
-WHERE id = $1 AND deleted_at IS NULL
+WHERE id = $1 
+  AND deleted_at IS NULL
+  AND type != 'hide'
 `
 
 type GetHologByIDRow struct {
@@ -117,10 +119,36 @@ func (q *Queries) GetHologByID(ctx context.Context, id uuid.UUID) (GetHologByIDR
 	return i, err
 }
 
+const hideHologByID = `-- name: HideHologByID :one
+UPDATE public.bookmark
+SET type = 'hide'
+WHERE id = $1 AND user_id = $2
+RETURNING id, user_id, holog_id, type
+`
+
+type HideHologByIDParams struct {
+	ID     uuid.UUID `json:"id"`
+	UserID string    `json:"user_id"`
+}
+
+func (q *Queries) HideHologByID(ctx context.Context, arg HideHologByIDParams) (Bookmark, error) {
+	row := q.db.QueryRow(ctx, hideHologByID, arg.ID, arg.UserID)
+	var i Bookmark
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.HologID,
+		&i.Type,
+	)
+	return i, err
+}
+
 const listHologsByPlaceId = `-- name: ListHologsByPlaceId :many
 SELECT id, place_id, title, content, created_at, external_url
 FROM public.holog
-WHERE place_id = $1 AND deleted_at IS NULL
+WHERE place_id = $1 
+  AND deleted_at IS NULL
+  AND type != 'hide'
 ORDER BY created_at DESC
 LIMIT $2
 `
@@ -169,7 +197,9 @@ func (q *Queries) ListHologsByPlaceId(ctx context.Context, arg ListHologsByPlace
 const listHologsByUserID = `-- name: ListHologsByUserID :many
 SELECT id, place_id, creator_id, schedule_id, title, content, created_at, image_url, external_url
 FROM public.holog
-WHERE creator_id = $1 AND deleted_at IS NULL
+WHERE creator_id = $1 
+  AND deleted_at IS NULL
+  AND type != 'hide'
 ORDER BY created_at DESC
 `
 

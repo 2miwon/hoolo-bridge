@@ -177,7 +177,16 @@ type DeleteHologRequest struct {
 	ID string `json:"id"`
 }
 
-// 
+// @Summary 홀로그 삭제하기
+// @Description Delete a holog
+// @Tags holog
+// @Accept json
+// @Produce json
+// @Param DeleteHologRequest body DeleteHologRequest true "DeleteHolog Request"
+// @Success 200 {object} db.DeleteHologByIDRow
+// @Failure 404
+// @Failure 400
+// @Router /holog/delete [post]
 func DeleteHolog(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
@@ -208,4 +217,38 @@ func DeleteHolog(c *fiber.Ctx, q *db.Queries) error {
 	}
 
 	return c.JSON(holog)
+}
+
+// @Summary 홀로그 숨기기
+// @Description Hide a holog
+// @Tags holog
+// @Accept json
+// @Produce json
+// @Param HideHologByIDParams body db.HideHologByIDParams true "HideHolog Request"
+// @Success 200 {object} db.HideHologByIDRow
+// @Failure 404
+// @Failure 400
+// @Router /holog/hide [post]
+func HideHolog(c *fiber.Ctx, q *db.Queries) error {
+	ctx := context.WithValue(context.Background(), "fiberCtx", c)
+
+	var req db.HideHologByIDParams
+
+	err := utils.ParseRequestBody(c, &req)
+	if err != nil {
+		log.Printf("Error parsing request body: %v", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request",
+		})
+	}
+
+	hide, err := q.HideHologByID(ctx, req)
+	if err != nil {
+		log.Printf("Error hiding holog: %v", err)
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Error hiding holog",
+		})
+	}
+
+	return c.JSON(hide)
 }

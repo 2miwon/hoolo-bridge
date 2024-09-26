@@ -24,12 +24,7 @@ type Bookmark struct {
 	ID      uuid.UUID `json:"id"`
 	UserID  string    `json:"user_id"`
 	HologID uuid.UUID `json:"holog_id"`
-}
-
-type Hide struct {
-	ID      uuid.UUID `json:"id"`
-	UserID  string    `json:"user_id"`
-	HologID uuid.UUID `json:"holog_id"`
+	Type    string    `json:"type"`
 }
 
 type Holog struct {
