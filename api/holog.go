@@ -117,7 +117,8 @@ func FetchRelatePlaceList(c *fiber.Ctx, q *db.Queries) error {
 			"error": "Most place list not exist",
 		})
 	}
-
+	
+	log.Printf("FetchRelatePlaceList list: %v", list)
 	return c.JSON(list)
 }
 
