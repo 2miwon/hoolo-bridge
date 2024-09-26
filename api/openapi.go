@@ -212,7 +212,7 @@ func SearchPlace(c *fiber.Ctx) error {
 	keyword := c.Params("keyword")
 	// encodedKeyword := url.QueryEscape(keyword)
 	url := base_url + "&numOfRows=8&pageNo=1&keyword=" + keyword
-
+	log.Print("url: ", url)
 	resp, err := GetRequest(c, ctx, url)
 	if err != nil {
 		log.Printf("Error fetching place list: %v", err)
@@ -220,12 +220,12 @@ func SearchPlace(c *fiber.Ctx) error {
 			"error": "Place list not exist",
 		})
 	}
-
+	log.Printf("resp: %v", resp)
 	parsed := OpenApiParser(c, resp)
 	if parsed == nil {
 		log.Printf("Error parsing data: %v", parsed)
 		return c.JSON([]PlaceRecentResponse{})
 	}
-
+	log.Printf("parsed: %v", parsed)
 	return c.JSON(parsed)
 }

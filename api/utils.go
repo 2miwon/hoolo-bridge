@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -20,8 +21,14 @@ func GetRequest(c *fiber.Ctx, ctx context.Context, url string) (map[string]inter
     }
 
 	req.Header.Set("Accept", "*/*")
-
-	client := &http.Client{}
+    
+    tr := &http.Transport{
+        TLSClientConfig: &tls.Config{
+            MinVersion: tls.VersionTLS12,
+            InsecureSkipVerify: true,
+        },
+    }
+    client := &http.Client{Transport: tr}
     resp, err := client.Do(req)
 	if err != nil {
         log.Printf("Error making request: %v", err)
