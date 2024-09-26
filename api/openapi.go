@@ -3,9 +3,7 @@ package api
 import (
 	"context"
 	"log"
-	"math/rand"
 	"os"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -34,7 +32,7 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
 	// ctx := context.WithValue(context.Background(), "fiberCtx", c)
 	// base_url := os.Getenv("OPENAPI_LOCATION")
 	
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	// r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	result := make([]map[string]interface{}, 0, n)
 
 	for len(result) < n {
