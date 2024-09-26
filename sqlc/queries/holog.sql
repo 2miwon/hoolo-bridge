@@ -23,7 +23,7 @@ FROM public.holog h
 LEFT JOIN public.bookmark b ON h.id = b.holog_id AND b.user_id = $2
 WHERE h.id = $1
   AND h.deleted_at IS NULL
-  AND b.type != 'hide';
+  AND (b.type IS NULL OR b.type != 'hide');
 
 -- name: CreateHolog :one
 INSERT INTO public.holog (place_id, creator_id, schedule_id, title, content, image_url)
@@ -36,7 +36,7 @@ FROM public.holog h
 LEFT JOIN public.bookmark b ON h.id = b.holog_id AND b.user_id = $1
 WHERE h.creator_id = $1
   AND h.deleted_at IS NULL
-  AND b.type != 'hide'
+  AND(b.type IS NULL OR b.type != 'hide')
 ORDER BY h.created_at DESC;
 
 -- name: ListHologsByUserIdPlaceId :many
@@ -46,7 +46,7 @@ LEFT JOIN public.bookmark b ON h.id = b.holog_id AND b.user_id = $1
 WHERE h.creator_id = $1
   AND h.place_id = $2
   AND h.deleted_at IS NULL
-  AND b.type != 'hide'
+  AND (b.type IS NULL OR b.type != 'hide')
 ORDER BY h.created_at DESC;
 
 -- name: DeleteHologByID :one
