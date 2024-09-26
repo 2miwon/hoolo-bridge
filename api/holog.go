@@ -118,7 +118,7 @@ func FetchRelatePlaceList(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
-	log.Printf("FetchRelatePlaceList list: %v", c.JSON(list))
+	log.Printf("FetchRelatePlaceList list: %v", list)
 	return c.JSON(list)
 }
 
