@@ -59,13 +59,15 @@ func FetchMostPlaceList(c *fiber.Ctx, q *db.Queries) error {
 			return c.JSON([]PlaceRecentResponse{})
 		}
 
-		placeDetailJSON, err := json.Marshal(placeDetail)
+		placeDetailJSON, err := json.Marshal(placeDetail[0])
     	if err != nil {
     	    log.Printf("Error marshalling place detail: %v", err)
     	    return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
     	        "error": "Failed to marshal place detail",
     	    })
     	}
+
+		log.Printf("place detail: %v", placeDetail)
 
     	var place PlaceDetailResponse
     	if err := json.Unmarshal(placeDetailJSON, &place); err != nil {

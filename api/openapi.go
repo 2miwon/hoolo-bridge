@@ -69,7 +69,7 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
     	//     }
     	// }
 
-		// nul := r.Intn()
+		
 	}
 
 	return c.JSON(result)
@@ -77,12 +77,22 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
 
 type PlaceDetailResponse struct {
 	ContentId string `json:"contentid"`
+	Contenttypeid string `json:"contenttypeid"`
+	Modifiedtime string `json:"modifiedtime"`
 	FirstImage string `json:"firstimage"`
 	FirstImage2 string `json:"firstimage2"`
 	Addr1 string `json:"addr1"`
+	Addr2 string `json:"addr2"`
 	Zipcode string `json:"zipcode"`
 	Mapx string `json:"mapx"`
 	Mapy string `json:"mapy"`
+	Mlevel string `json:"mlevel"`
+	Createdtime	string `json:"createdtime"`
+	Homepage string `json:"homepage"`
+	Booktour string `json:"booktour"`
+	CpyrhtDivCd string `json:"cpyrhtDivCd"`
+	Tel string `json:"tel"`
+	Telname string `json:"telname"`
 	Title string `json:"title"`
 	Overview string `json:"overview"`
 }

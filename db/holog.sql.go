@@ -144,7 +144,7 @@ func (q *Queries) HideHologByID(ctx context.Context, arg HideHologByIDParams) (B
 }
 
 const listHologsByPlaceId = `-- name: ListHologsByPlaceId :many
-SELECT id, place_id, title, content, created_at, external_url
+SELECT id, place_id, title, content, created_at, external_url, image_url
 FROM public.holog
 WHERE place_id = $1 
   AND deleted_at IS NULL
@@ -165,6 +165,7 @@ type ListHologsByPlaceIdRow struct {
 	Content     string    `json:"content"`
 	CreatedAt   null.Time `json:"created_at"`
 	ExternalUrl *string   `json:"external_url"`
+	ImageUrl    *string   `json:"image_url"`
 }
 
 func (q *Queries) ListHologsByPlaceId(ctx context.Context, arg ListHologsByPlaceIdParams) ([]ListHologsByPlaceIdRow, error) {
@@ -183,6 +184,7 @@ func (q *Queries) ListHologsByPlaceId(ctx context.Context, arg ListHologsByPlace
 			&i.Content,
 			&i.CreatedAt,
 			&i.ExternalUrl,
+			&i.ImageUrl,
 		); err != nil {
 			return nil, err
 		}
