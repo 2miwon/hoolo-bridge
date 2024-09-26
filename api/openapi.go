@@ -2,10 +2,13 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"golang.org/x/exp/rand"
 )
 
 type PlaceListResponse struct {
@@ -29,13 +32,72 @@ type PlaceListResponse struct {
 // @Failure 400
 // @Router /place/list [get]
 func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
-	// ctx := context.WithValue(context.Background(), "fiberCtx", c)
-	// base_url := os.Getenv("OPENAPI_LOCATION")
+	ctx := context.WithValue(context.Background(), "fiberCtx", c)
+	base_url := os.Getenv("VISIT_JEJU")
 	
-	// r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	r := rand.New(rand.NewSource(uint64(time.Now().UnixNano())))
 	result := make([]map[string]interface{}, 0, n)
 
-	for len(result) < n {
+	pageNo := r.Intn(13) + 1
+	url := base_url + "&page=" + fmt.Sprintf("%d", pageNo)
+
+	resp, err := GetRequest(c, ctx, url)
+	if err != nil {
+		log.Printf("Error fetching place list: %v", err)
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Place list not exist",
+		})
+	}
+
+	parsed, ok := resp["items"].([]interface{})
+	if !ok {
+		log.Printf("Type assertion failed for 'response'")
+		return c.JSON([]PlaceListResponse{})
+	}
+
+	numbers := rand.Perm(100)[:10]
+
+	for i, number := range numbers {
+		items := parsed[number].(map[string]interface{})
+
+		refine := make(map[string]interface{})
+		refine["addr1"] = items["roadaddress"]
+		refine["contentid"] = items["contentsidd"]
+		repPhoto, ok := items["repPhoto"].(map[string]interface{})
+    	if !ok {
+    	    refine["firstimage"] = ""
+			refine["firstimage2"] = ""
+    	    log.Printf("firstimage: %v", refine["firstimage"])
+			return c.JSON([]PlaceListResponse{})
+    	}
+
+    	// photoid 키 확인 및 타입 변환
+    	photoid, ok := repPhoto["photoid"].(map[string]interface{})
+    	if !ok {
+    	    refine["firstimage"] = ""
+			refine["firstimage2"] = ""
+    	    log.Printf("firstimage: %v", refine["firstimage"])
+			return c.JSON([]PlaceListResponse{})
+    	}
+
+		refine["firstimage"] = photoid["thumbnailpath"]
+		refine["firstimage2"] = photoid["imagepath"]
+		refine["mapx"] = items["latitude"]
+		refine["mapy"] = items["longitude"]
+		phoneno, exists := items["phoneno"]
+    	if !exists {
+    	    phoneno = ""
+    	}
+		refine["tel"] = phoneno
+		refine["title"] = items["title"]
+		refine["overview"] = items["introduction"]
+	
+		result = append(result, refine)
+		if i >= n {
+			break
+		}
+	}
+	// for len(result) < n {
 		// pageNo := r.Intn(246) + 1
 		// url := base_url + "&pageNo=" + fmt.Sprintf("%d", pageNo)
 
@@ -70,7 +132,8 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
     	// }
 
 		
-	}
+		
+	// }
 
 	return c.JSON(result)
 }

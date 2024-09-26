@@ -77,5 +77,3 @@ func OpenApiParser(c *fiber.Ctx, decode_resp map[string]interface{}) []interface
 
 	return item
 }
-
-// func VisitJejuApiParser(c 

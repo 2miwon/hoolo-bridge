@@ -254,3 +254,28 @@ func HideHolog(c *fiber.Ctx, q *db.Queries) error {
 
 	return c.JSON(hide)
 }
+
+func ListHologsByUserIdPlaceId(c *fiber.Ctx, q *db.Queries) error {
+	ctx := context.WithValue(context.Background(), "fiberCtx", c)
+
+	var req db.ListHologsByUserIdPlaceIdParams
+
+	err := utils.ParseRequestBody(c, &req)
+	if err != nil {
+		log.Printf("Error parsing request body: %v", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request",
+		})
+	}
+
+	list, err := q.ListHologsByUserIdPlaceId(ctx, req)
+
+	if err != nil {
+		log.Printf("Error fetching most place list: %v", err)
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Most place list not exist",
+		})
+	}
+
+	return c.JSON(list)
+}
