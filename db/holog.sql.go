@@ -58,6 +58,36 @@ func (q *Queries) CreateHolog(ctx context.Context, arg CreateHologParams) (Creat
 	return i, err
 }
 
+const deleteHologByID = `-- name: DeleteHologByID :one
+UPDATE public.holog
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING id, place_id, creator_id, title, content, created_at
+`
+
+type DeleteHologByIDRow struct {
+	ID        uuid.UUID `json:"id"`
+	PlaceID   string    `json:"place_id"`
+	CreatorID string    `json:"creator_id"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	CreatedAt null.Time `json:"created_at"`
+}
+
+func (q *Queries) DeleteHologByID(ctx context.Context, id uuid.UUID) (DeleteHologByIDRow, error) {
+	row := q.db.QueryRow(ctx, deleteHologByID, id)
+	var i DeleteHologByIDRow
+	err := row.Scan(
+		&i.ID,
+		&i.PlaceID,
+		&i.CreatorID,
+		&i.Title,
+		&i.Content,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getHologByID = `-- name: GetHologByID :one
 SELECT id, place_id, title, content, created_at, image_url
 FROM public.holog

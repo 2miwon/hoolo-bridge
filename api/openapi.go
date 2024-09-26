@@ -84,6 +84,7 @@ type PlaceDetailResponse struct {
 	Zipcode string `json:"zipcode"`
 	Mapx string `json:"mapx"`
 	Mapy string `json:"mapy"`
+	Title string `json:"title"`
 	Overview string `json:"overview"`
 }
 

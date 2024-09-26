@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS public.narration_style;
 DROP TABLE IF EXISTS public.narration;
 DROP TABLE IF EXISTS public.narration_series;
 DROP TABLE IF EXISTS public.announce_post;
+DROP TABLE IF EXISTS public.hide;
 DROP TABLE IF EXISTS public.bookmark;
 DROP TABLE IF EXISTS public.holog;
 DROP TABLE IF EXISTS public.schedule_detail;
@@ -37,6 +38,7 @@ CREATE TABLE IF NOT EXISTS public.schedule_detail (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     schedule_id UUID NOT NULL,
     place_id TEXT NOT NULL,
+    title TEXT NOT NULL,
     deleted_at TIMESTAMPTZ,
     FOREIGN KEY (schedule_id) REFERENCES public.schedule(id)
 );
@@ -58,6 +60,15 @@ CREATE TABLE IF NOT EXISTS public.holog (
 );
 
 CREATE TABLE IF NOT EXISTS public.bookmark (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id TEXT NOT NULL,
+    holog_id UUID NOT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE,
+    FOREIGN KEY (holog_id) REFERENCES public.holog(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.hide (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id TEXT NOT NULL,
     holog_id UUID NOT NULL,

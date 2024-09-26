@@ -84,6 +84,7 @@ func GetScheduleDetailByPlaceID(c *fiber.Ctx, q *db.Queries) error {
 type CreateScheduleDetailRequest struct {
 	ScheduleID string `json:"schedule_id"`
 	PlaceID string `json:"place_id"`
+	Title string `json:"title"`
 }
 
 // @Summary 스케줄 상세장소 생성
@@ -120,6 +121,7 @@ func CreateScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 	var rst = db.CreateScheduleDetailParams{
 		ScheduleID: uuid,
 		PlaceID: req.PlaceID,
+		Title: req.Title,
 	}
 
 	res, err := q.CreateScheduleDetail(ctx, rst)

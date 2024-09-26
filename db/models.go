@@ -26,6 +26,12 @@ type Bookmark struct {
 	HologID uuid.UUID `json:"holog_id"`
 }
 
+type Hide struct {
+	ID      uuid.UUID `json:"id"`
+	UserID  string    `json:"user_id"`
+	HologID uuid.UUID `json:"holog_id"`
+}
+
 type Holog struct {
 	ID          uuid.UUID   `json:"id"`
 	PlaceID     string      `json:"place_id"`
@@ -54,6 +60,7 @@ type ScheduleDetail struct {
 	ID         uuid.UUID `json:"id"`
 	ScheduleID uuid.UUID `json:"schedule_id"`
 	PlaceID    string    `json:"place_id"`
+	Title      string    `json:"title"`
 	DeletedAt  null.Time `json:"deleted_at"`
 }
 

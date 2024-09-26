@@ -9,6 +9,7 @@ import (
 	"github.com/2miwon/hoolo-bridge/db"
 	"github.com/2miwon/hoolo-bridge/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type PlaceRecentResponse struct {
@@ -170,4 +171,41 @@ func ListHologsByUserID(c *fiber.Ctx, q *db.Queries) error {
 	}
 
 	return c.JSON(hologs)
+}
+
+type DeleteHologRequest struct {
+	ID string `json:"id"`
+}
+
+// 
+func DeleteHolog(c *fiber.Ctx, q *db.Queries) error {
+	ctx := context.WithValue(context.Background(), "fiberCtx", c)
+
+	var req DeleteHologRequest
+
+	err := utils.ParseRequestBody(c, &req)
+	if err != nil {
+		log.Printf("Error parsing request body: %v", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request",
+		})
+	}
+
+	uuid, err := uuid.Parse(req.ID)
+	if err != nil {
+		log.Printf("Invalid holog ID format: %v", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid holog ID format",
+		})
+	}
+
+	holog, err := q.DeleteHologByID(ctx, uuid)
+	if err != nil {
+		log.Printf("Error deleting holog: %v", err)
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Error deleting holog",
+		})
+	}
+
+	return c.JSON(holog)
 }

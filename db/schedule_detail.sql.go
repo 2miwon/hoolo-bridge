@@ -12,26 +12,33 @@ import (
 )
 
 const createScheduleDetail = `-- name: CreateScheduleDetail :one
-INSERT INTO public.schedule_detail (schedule_id, place_id)
-VALUES ($1, $2)
-RETURNING id, schedule_id, place_id
+INSERT INTO public.schedule_detail (schedule_id, place_id, title)
+VALUES ($1, $2, $3)
+RETURNING id, schedule_id, place_id, title
 `
 
 type CreateScheduleDetailParams struct {
 	ScheduleID uuid.UUID `json:"schedule_id"`
 	PlaceID    string    `json:"place_id"`
+	Title      string    `json:"title"`
 }
 
 type CreateScheduleDetailRow struct {
 	ID         uuid.UUID `json:"id"`
 	ScheduleID uuid.UUID `json:"schedule_id"`
 	PlaceID    string    `json:"place_id"`
+	Title      string    `json:"title"`
 }
 
 func (q *Queries) CreateScheduleDetail(ctx context.Context, arg CreateScheduleDetailParams) (CreateScheduleDetailRow, error) {
-	row := q.db.QueryRow(ctx, createScheduleDetail, arg.ScheduleID, arg.PlaceID)
+	row := q.db.QueryRow(ctx, createScheduleDetail, arg.ScheduleID, arg.PlaceID, arg.Title)
 	var i CreateScheduleDetailRow
-	err := row.Scan(&i.ID, &i.ScheduleID, &i.PlaceID)
+	err := row.Scan(
+		&i.ID,
+		&i.ScheduleID,
+		&i.PlaceID,
+		&i.Title,
+	)
 	return i, err
 }
 
@@ -39,7 +46,7 @@ const deleteScheduleDetail = `-- name: DeleteScheduleDetail :one
 UPDATE public.schedule_detail
 SET deleted_at = NOW()
 WHERE schedule_id = $1 AND place_id = $2
-RETURNING id, schedule_id, place_id
+RETURNING id, schedule_id, place_id, title
 `
 
 type DeleteScheduleDetailParams struct {
@@ -51,17 +58,23 @@ type DeleteScheduleDetailRow struct {
 	ID         uuid.UUID `json:"id"`
 	ScheduleID uuid.UUID `json:"schedule_id"`
 	PlaceID    string    `json:"place_id"`
+	Title      string    `json:"title"`
 }
 
 func (q *Queries) DeleteScheduleDetail(ctx context.Context, arg DeleteScheduleDetailParams) (DeleteScheduleDetailRow, error) {
 	row := q.db.QueryRow(ctx, deleteScheduleDetail, arg.ScheduleID, arg.PlaceID)
 	var i DeleteScheduleDetailRow
-	err := row.Scan(&i.ID, &i.ScheduleID, &i.PlaceID)
+	err := row.Scan(
+		&i.ID,
+		&i.ScheduleID,
+		&i.PlaceID,
+		&i.Title,
+	)
 	return i, err
 }
 
 const getMyScheduleDetailsByScheduleId = `-- name: GetMyScheduleDetailsByScheduleId :many
-SELECT id, schedule_id, place_id
+SELECT id, schedule_id, place_id, title
 FROM public.schedule_detail
 WHERE schedule_id = $1 AND deleted_at IS NULL
 `
@@ -70,6 +83,7 @@ type GetMyScheduleDetailsByScheduleIdRow struct {
 	ID         uuid.UUID `json:"id"`
 	ScheduleID uuid.UUID `json:"schedule_id"`
 	PlaceID    string    `json:"place_id"`
+	Title      string    `json:"title"`
 }
 
 func (q *Queries) GetMyScheduleDetailsByScheduleId(ctx context.Context, scheduleID uuid.UUID) ([]GetMyScheduleDetailsByScheduleIdRow, error) {
@@ -81,7 +95,12 @@ func (q *Queries) GetMyScheduleDetailsByScheduleId(ctx context.Context, schedule
 	items := []GetMyScheduleDetailsByScheduleIdRow{}
 	for rows.Next() {
 		var i GetMyScheduleDetailsByScheduleIdRow
-		if err := rows.Scan(&i.ID, &i.ScheduleID, &i.PlaceID); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.ScheduleID,
+			&i.PlaceID,
+			&i.Title,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -93,7 +112,7 @@ func (q *Queries) GetMyScheduleDetailsByScheduleId(ctx context.Context, schedule
 }
 
 const getScheduleDetailByScheduleIdAndPlaceId = `-- name: GetScheduleDetailByScheduleIdAndPlaceId :many
-SELECT id, schedule_id, place_id
+SELECT id, schedule_id, place_id, title
 FROM public.schedule_detail
 WHERE schedule_id = $1 AND place_id = $2 AND deleted_at IS NULL
 `
@@ -107,6 +126,7 @@ type GetScheduleDetailByScheduleIdAndPlaceIdRow struct {
 	ID         uuid.UUID `json:"id"`
 	ScheduleID uuid.UUID `json:"schedule_id"`
 	PlaceID    string    `json:"place_id"`
+	Title      string    `json:"title"`
 }
 
 func (q *Queries) GetScheduleDetailByScheduleIdAndPlaceId(ctx context.Context, arg GetScheduleDetailByScheduleIdAndPlaceIdParams) ([]GetScheduleDetailByScheduleIdAndPlaceIdRow, error) {
@@ -118,7 +138,12 @@ func (q *Queries) GetScheduleDetailByScheduleIdAndPlaceId(ctx context.Context, a
 	items := []GetScheduleDetailByScheduleIdAndPlaceIdRow{}
 	for rows.Next() {
 		var i GetScheduleDetailByScheduleIdAndPlaceIdRow
-		if err := rows.Scan(&i.ID, &i.ScheduleID, &i.PlaceID); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.ScheduleID,
+			&i.PlaceID,
+			&i.Title,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

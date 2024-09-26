@@ -30,4 +30,10 @@ FROM public.holog
 WHERE creator_id = $1 AND deleted_at IS NULL
 ORDER BY created_at DESC;
 
+-- name: DeleteHologByID :one
+UPDATE public.holog
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING id, place_id, creator_id, title, content, created_at;
+
 -- TODO: TISTORY

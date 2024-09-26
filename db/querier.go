@@ -16,6 +16,7 @@ type Querier interface {
 	CreateScheduleDetail(ctx context.Context, arg CreateScheduleDetailParams) (CreateScheduleDetailRow, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	DeleteBookmarkByHologId(ctx context.Context, arg DeleteBookmarkByHologIdParams) (DeleteBookmarkByHologIdRow, error)
+	DeleteHologByID(ctx context.Context, id uuid.UUID) (DeleteHologByIDRow, error)
 	DeleteScheduleDetail(ctx context.Context, arg DeleteScheduleDetailParams) (DeleteScheduleDetailRow, error)
 	GetBookmarkByUserIDAndPlaceID(ctx context.Context, arg GetBookmarkByUserIDAndPlaceIDParams) (GetBookmarkByUserIDAndPlaceIDRow, error)
 	GetHologByID(ctx context.Context, id uuid.UUID) (GetHologByIDRow, error)
