@@ -56,8 +56,8 @@ WHERE id = $1
 RETURNING id, place_id, creator_id, title, content, created_at;
 
 -- name: HideHologByID :one
-INSERT INTO public.bookmark (id, user_id, holog_id, type)
-VALUES ($1, $2, $3, 'hide')
+INSERT INTO public.bookmark (user_id, holog_id, type)
+VALUES ($1, $2, 'hide')
 ON CONFLICT (user_id, holog_id)
 DO UPDATE SET type = 'hide'
 RETURNING id, user_id, holog_id, type;

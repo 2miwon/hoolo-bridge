@@ -132,21 +132,20 @@ func (q *Queries) GetHologByID(ctx context.Context, arg GetHologByIDParams) (Get
 }
 
 const hideHologByID = `-- name: HideHologByID :one
-INSERT INTO public.bookmark (id, user_id, holog_id, type)
-VALUES ($1, $2, $3, 'hide')
+INSERT INTO public.bookmark (user_id, holog_id, type)
+VALUES ($1, $2, 'hide')
 ON CONFLICT (user_id, holog_id)
 DO UPDATE SET type = 'hide'
 RETURNING id, user_id, holog_id, type
 `
 
 type HideHologByIDParams struct {
-	ID      uuid.UUID `json:"id"`
 	UserID  string    `json:"user_id"`
 	HologID uuid.UUID `json:"holog_id"`
 }
 
 func (q *Queries) HideHologByID(ctx context.Context, arg HideHologByIDParams) (Bookmark, error) {
-	row := q.db.QueryRow(ctx, hideHologByID, arg.ID, arg.UserID, arg.HologID)
+	row := q.db.QueryRow(ctx, hideHologByID, arg.UserID, arg.HologID)
 	var i Bookmark
 	err := row.Scan(
 		&i.ID,
