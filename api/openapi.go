@@ -81,8 +81,8 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
 
 		refine["firstimage"] = photoid["thumbnailpath"]
 		refine["firstimage2"] = photoid["imgpath"]
-		refine["mapx"] = items["latitude"]
-		refine["mapy"] = items["longitude"]
+		refine["mapx"] = fmt.Sprintf("%f", items["latitude"])
+		refine["mapy"] = fmt.Sprintf("%f", items["longitude"])
 		phoneno, exists := items["phoneno"]
     	if !exists {
     	    phoneno = ""
