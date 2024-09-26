@@ -27,6 +27,7 @@ func GetScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 
 	scheduleId, err := uuid.Parse(scheduleIdStr)
     if err != nil {
+		log.Printf("Invalid schedule ID format: %v", err)
         return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
             "error": "Invalid schedule ID format",
         })
@@ -34,6 +35,7 @@ func GetScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 
 	res, err := q.GetMyScheduleDetailsByScheduleId(ctx, scheduleId)
 	if err != nil {
+		log.Printf("Error fetching schedule: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to get schedule",
 		})

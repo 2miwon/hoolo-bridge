@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS public.schedule (
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMPTZ,
 
-    FOREIGN KEY (user_id) REFERENCES public.users(id)
+    FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS public.schedule_detail (
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS public.holog (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMPTZ,
 
-    FOREIGN KEY (creator_id) REFERENCES public.users(id)
+    FOREIGN KEY (creator_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS public.bookmark (
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS public.bookmark (
     user_id TEXT NOT NULL,
     holog_id UUID NOT NULL,
 
-    FOREIGN KEY (user_id) REFERENCES public.users(id),
+    FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE,
     FOREIGN KEY (holog_id) REFERENCES public.holog(id)
 );
 -- CREATE TABLE IF NOT EXISTS public.narration_style (

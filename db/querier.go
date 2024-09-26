@@ -17,7 +17,6 @@ type Querier interface {
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	DeleteBookmarkByHologId(ctx context.Context, arg DeleteBookmarkByHologIdParams) (DeleteBookmarkByHologIdRow, error)
 	DeleteScheduleDetail(ctx context.Context, arg DeleteScheduleDetailParams) (ScheduleDetail, error)
-	DeleteUserByID(ctx context.Context, id string) (DeleteUserByIDRow, error)
 	GetBookmarkByUserIDAndPlaceID(ctx context.Context, arg GetBookmarkByUserIDAndPlaceIDParams) (GetBookmarkByUserIDAndPlaceIDRow, error)
 	GetHologByID(ctx context.Context, id uuid.UUID) (GetHologByIDRow, error)
 	GetMyScheduleDetailsByScheduleId(ctx context.Context, scheduleID uuid.UUID) ([]ScheduleDetail, error)
@@ -25,11 +24,13 @@ type Querier interface {
 	GetScheduleDetailByScheduleIdAndPlaceId(ctx context.Context, arg GetScheduleDetailByScheduleIdAndPlaceIdParams) ([]ScheduleDetail, error)
 	GetUserByEmailAndPassword(ctx context.Context, arg GetUserByEmailAndPasswordParams) (GetUserByEmailAndPasswordRow, error)
 	GetUserByID(ctx context.Context, id string) (GetUserByIDRow, error)
+	HardDeleteUserByID(ctx context.Context, id string) (HardDeleteUserByIDRow, error)
 	ListAnnounces(ctx context.Context) ([]ListAnnouncesRow, error)
 	ListHologsByPlaceId(ctx context.Context, arg ListHologsByPlaceIdParams) ([]ListHologsByPlaceIdRow, error)
 	ListHologsByUserID(ctx context.Context, creatorID string) ([]ListHologsByUserIDRow, error)
 	ListHologsMostByWeek(ctx context.Context) ([]ListHologsMostByWeekRow, error)
 	SetBookmarkByHologId(ctx context.Context, arg SetBookmarkByHologIdParams) (SetBookmarkByHologIdRow, error)
+	SoftDeleteUserByID(ctx context.Context, id string) (SoftDeleteUserByIDRow, error)
 	UpdateSchedule(ctx context.Context, arg UpdateScheduleParams) (UpdateScheduleRow, error)
 }
 

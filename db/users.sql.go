@@ -33,25 +33,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (CreateU
 	return i, err
 }
 
-const deleteUserByID = `-- name: DeleteUserByID :one
-UPDATE public.users
-SET deleted_at = NOW()
-WHERE id = $1
-RETURNING id, username
-`
-
-type DeleteUserByIDRow struct {
-	ID       string `json:"id"`
-	Username string `json:"username"`
-}
-
-func (q *Queries) DeleteUserByID(ctx context.Context, id string) (DeleteUserByIDRow, error) {
-	row := q.db.QueryRow(ctx, deleteUserByID, id)
-	var i DeleteUserByIDRow
-	err := row.Scan(&i.ID, &i.Username)
-	return i, err
-}
-
 const getUserByEmailAndPassword = `-- name: GetUserByEmailAndPassword :one
 SELECT id, username, profile_image_url
 FROM public.users
@@ -92,5 +73,42 @@ func (q *Queries) GetUserByID(ctx context.Context, id string) (GetUserByIDRow, e
 	row := q.db.QueryRow(ctx, getUserByID, id)
 	var i GetUserByIDRow
 	err := row.Scan(&i.ID, &i.Username, &i.ProfileImageUrl)
+	return i, err
+}
+
+const hardDeleteUserByID = `-- name: HardDeleteUserByID :one
+DELETE FROM public.users
+WHERE id = $1
+RETURNING id, username
+`
+
+type HardDeleteUserByIDRow struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+}
+
+func (q *Queries) HardDeleteUserByID(ctx context.Context, id string) (HardDeleteUserByIDRow, error) {
+	row := q.db.QueryRow(ctx, hardDeleteUserByID, id)
+	var i HardDeleteUserByIDRow
+	err := row.Scan(&i.ID, &i.Username)
+	return i, err
+}
+
+const softDeleteUserByID = `-- name: SoftDeleteUserByID :one
+UPDATE public.users
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING id, username
+`
+
+type SoftDeleteUserByIDRow struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+}
+
+func (q *Queries) SoftDeleteUserByID(ctx context.Context, id string) (SoftDeleteUserByIDRow, error) {
+	row := q.db.QueryRow(ctx, softDeleteUserByID, id)
+	var i SoftDeleteUserByIDRow
+	err := row.Scan(&i.ID, &i.Username)
 	return i, err
 }

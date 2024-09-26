@@ -13,7 +13,13 @@ SELECT id, username, profile_image_url
 FROM public.users
 WHERE id = $1 AND deleted_at IS NULL;
 
--- name: DeleteUserByID :one
+-- name: SoftDeleteUserByID :one
+UPDATE public.users
+SET deleted_at = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING id, username;
+
+-- name: HardDeleteUserByID :one
 DELETE FROM public.users
 WHERE id = $1
 RETURNING id, username;
