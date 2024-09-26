@@ -31,8 +31,8 @@ type PlaceListResponse struct {
 // @Failure 400
 // @Router /place/list [get]
 func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
-	ctx := context.WithValue(context.Background(), "fiberCtx", c)
-	base_url := os.Getenv("OPENAPI_LOCATION")
+	// ctx := context.WithValue(context.Background(), "fiberCtx", c)
+	// base_url := os.Getenv("OPENAPI_LOCATION")
 	
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	result := make([]map[string]interface{}, 0, n)
@@ -71,7 +71,7 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
     	//     }
     	// }
 
-		nul := r.Intn()
+		// nul := r.Intn()
 	}
 
 	return c.JSON(result)
