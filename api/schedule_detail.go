@@ -109,8 +109,16 @@ func CreateScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
+	uuid, err := uuid.Parse(req.ScheduleID)
+	if err != nil {
+		log.Printf("Invalid schedule ID format: %v", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid schedule ID format",
+		})
+	}
+
 	var rst = db.CreateScheduleDetailParams{
-		ScheduleID: uuid.MustParse(req.ScheduleID),
+		ScheduleID: uuid,
 		PlaceID: req.PlaceID,
 	}
 
@@ -153,8 +161,16 @@ func DeleteScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
+	uuid, err := uuid.Parse(req.ScheduleID)
+	if err != nil {
+		log.Printf("Invalid schedule ID format: %v", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid schedule ID format",
+		})
+	}
+
 	var rst = db.DeleteScheduleDetailParams{
-		ScheduleID: uuid.MustParse(req.ScheduleID),
+		ScheduleID: uuid,
 		PlaceID: req.PlaceID,
 	}
 
