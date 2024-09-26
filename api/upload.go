@@ -180,6 +180,8 @@ func UploadS3(c *fiber.Ctx) error {
         log.Println("Failed to sign request", err)
     }
 
-    return c.JSON(urlStr)
+    return c.JSON(fiber.Map{
+		"presigned_uri": urlStr,
+	})
 }
 
