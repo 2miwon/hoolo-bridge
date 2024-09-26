@@ -12,7 +12,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
-
 type UploadRequest struct {
 	File string `json:"file"`
 }
@@ -168,9 +167,9 @@ func UploadS3(c *fiber.Ctx) error {
 	svc := s3.New(sess)
 
 	fileUUID := uuid.New().String()
-    filePath := fmt.Sprintf("uploads/%s.jpg", fileUUID)
+    filePath := fmt.Sprintf("%s", fileUUID)
 
-   	req, _ := svc.GetObjectRequest(&s3.GetObjectInput{
+   	req, _ := svc.PutObjectRequest(&s3.PutObjectInput{
         Bucket: aws.String("hoolo"),
         Key:    aws.String(filePath),
     })

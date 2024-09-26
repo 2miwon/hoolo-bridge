@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -39,38 +38,40 @@ func FetchRandomPlaceList(c *fiber.Ctx, n int) error {
 	result := make([]map[string]interface{}, 0, n)
 
 	for len(result) < n {
-		pageNo := r.Intn(246) + 1
-		url := base_url + "&pageNo=" + fmt.Sprintf("%d", pageNo)
+		// pageNo := r.Intn(246) + 1
+		// url := base_url + "&pageNo=" + fmt.Sprintf("%d", pageNo)
 
-		resp, err := GetRequest(c, ctx, url)
-		if err != nil {
-			log.Printf("Error fetching place list: %v", err)
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": "Place list not exist",
-			})
-		}
+		// resp, err := GetRequest(c, ctx, url)
+		// if err != nil {
+		// 	log.Printf("Error fetching place list: %v", err)
+		// 	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+		// 		"error": "Place list not exist",
+		// 	})
+		// }
 
-		parsed := OpenApiParser(c, resp)
-		if parsed == nil {
-			log.Printf("Error parsing data: %v", parsed)
-			return c.JSON([]PlaceRecentResponse{})
-		}
+		// parsed := OpenApiParser(c, resp)
+		// if parsed == nil {
+		// 	log.Printf("Error parsing data: %v", parsed)
+		// 	return c.JSON([]PlaceRecentResponse{})
+		// }
 		
-		for _, item := range parsed {
-    	    // data를 map[string]interface{} 타입으로 변환
-    	    data, ok := item.(map[string]interface{})
-    	    if !ok {
-    	        log.Printf("Error parsing data: %v", item)
-    	        continue
-    	    }
+		// for _, item := range parsed {
+    	//     // data를 map[string]interface{} 타입으로 변환
+    	//     data, ok := item.(map[string]interface{})
+    	//     if !ok {
+    	//         log.Printf("Error parsing data: %v", item)
+    	//         continue
+    	//     }
 
-    	    if photo, ok := data["firstimage"]; ok && photo != "" {
-    	        result = append(result, data)
-    	        if len(result) >= n {
-    	            break
-    	        }
-    	    }
-    	}
+    	//     if photo, ok := data["firstimage"]; ok && photo != "" {
+    	//         result = append(result, data)
+    	//         if len(result) >= n {
+    	//             break
+    	//         }
+    	//     }
+    	// }
+
+		nul := r.Intn()
 	}
 
 	return c.JSON(result)

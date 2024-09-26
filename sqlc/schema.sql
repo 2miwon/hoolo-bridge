@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS public.schedule_detail (
     place_id TEXT NOT NULL,
     title TEXT NOT NULL,
     deleted_at TIMESTAMPTZ,
-    FOREIGN KEY (schedule_id) REFERENCES public.schedule(id)
+    FOREIGN KEY (schedule_id) REFERENCES public.schedule(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS public.holog (
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS public.bookmark (
     type TEXT NOT NULL DEFAULT 'common', -- common / hide / save 
 
     FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE,
-    FOREIGN KEY (holog_id) REFERENCES public.holog(id)
+    FOREIGN KEY (holog_id) REFERENCES public.holog(id) ON DELETE CASCADE
 );
 
 -- CREATE TABLE IF NOT EXISTS public.narration_style (

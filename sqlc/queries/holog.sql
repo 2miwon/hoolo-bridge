@@ -8,7 +8,7 @@ ORDER BY mention_count DESC
 LIMIT 20;
 
 -- name: ListHologsByPlaceId :many
-SELECT id, place_id, title, content, created_at, external_url
+SELECT id, place_id, title, content, created_at, external_url, image_url
 FROM public.holog
 WHERE place_id = $1 
   AND deleted_at IS NULL

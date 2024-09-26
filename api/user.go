@@ -160,7 +160,7 @@ func Resign(c *fiber.Ctx, q *db.Queries) error {
         })
     }
 
-    _, err = q.SoftDeleteUserByID(ctx, req.ID)
+    _, err = q.HardDeleteUserByID(ctx, req.ID)
     if err != nil {
         log.Printf("Error deleting user: %v", err)
         return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
