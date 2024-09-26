@@ -204,7 +204,7 @@ func FetchPlaceDetail(c *fiber.Ctx) error {
 // @Success 200 {object} []PlaceListResponse
 // @Failure 404
 // @Failure 400
-// @Router /place/search/{id} [get]
+// @Router /place/search [get]
 func SearchPlace(c *fiber.Ctx) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 	base_url := os.Getenv("OPENAPI_SEARCH")

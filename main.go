@@ -57,7 +57,7 @@ func setupDatabase() (*pgxpool.Pool, error) {
 // @contact.email zhengsfsf@gmail.com
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host localhost:3000
+// @host 20.41.121.211:3000
 // @BasePath /
 func main() {
 	pool, err := setupDatabase()
@@ -139,7 +139,7 @@ func main() {
 		return api.SearchPlace(c)
 	})
 
-	app.Get("/holog/relate/:id", func(c *fiber.Ctx) error {
+	app.Post("/holog/relate", func(c *fiber.Ctx) error {
 		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 		return api.FetchRelatePlaceList(c, q)
 	})

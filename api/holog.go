@@ -91,19 +91,25 @@ func FetchMostPlaceList(c *fiber.Ctx, q *db.Queries) error {
 // @Tags holog
 // @Accept json
 // @Produce json
+// @Param ListHologsByPlaceIdParams body db.ListHologsByPlaceIdParams true "ListHologsByPlaceId Request"
 // @Success 200 {object} []db.ListHologsByPlaceIdRow
 // @Failure 404
 // @Failure 400
-// @Router /holog/relate/ [get]
+// @Router /holog/relate/ [post]
 func FetchRelatePlaceList(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
-	id := c.Params("id")
+	var req db.ListHologsByPlaceIdParams
+	
+	err := utils.ParseRequestBody(c, &req)
+	if err != nil {
+		log.Printf("Error parsing request body: %v", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request",
+		})
+	}
 
-	list, err := q.ListHologsByPlaceId(ctx, db.ListHologsByPlaceIdParams{
-		PlaceID: id,
-		Limit: 5,
-	})
+	list, err := q.ListHologsByPlaceId(ctx, req)
 
 	if err != nil {
 		log.Printf("Error fetching most place list: %v", err)
@@ -158,7 +164,7 @@ func CreateHolog(c *fiber.Ctx, q *db.Queries) error {
 // @Success 200 {object} []db.ListHologsByUserIDRow
 // @Failure 404
 // @Failure 400
-// @Router /holog/user/ [get]
+// @Router /holog/user/ [post]
 func ListHologsByUserID(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
@@ -255,6 +261,16 @@ func HideHolog(c *fiber.Ctx, q *db.Queries) error {
 	return c.JSON(hide)
 }
 
+// @Summary 특정 유저가 생성한 특정 장소의 홀로그 리스트 가져오기
+// @Description Get holog list by user ID and place ID
+// @Tags holog
+// @Accept json
+// @Produce json
+// @Param ListHologsByUserIdPlaceIdParams body db.ListHologsByUserIdPlaceIdParams true "ListHologsByUserIdPlaceId Request"
+// @Success 200 {object} []db.ListHologsByUserIdPlaceIdRow
+// @Failure 404
+// @Failure 400
+// @Router /holog/user/place [post]
 func ListHologsByUserIdPlaceId(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 

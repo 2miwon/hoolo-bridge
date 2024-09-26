@@ -34,7 +34,7 @@ RETURNING id, place_id, creator_id, title, content, created_at;
 SELECT h.id, h.place_id, h.creator_id, h.schedule_id, h.title, h.content, h.created_at, h.image_url, h.external_url
 FROM public.holog h
 LEFT JOIN public.bookmark b ON h.id = b.holog_id AND b.user_id = $1
-WHERE b.user_id = $1
+WHERE h.creator_id = $1
   AND h.deleted_at IS NULL
   AND b.type != 'hide'
 ORDER BY h.created_at DESC;
@@ -43,7 +43,7 @@ ORDER BY h.created_at DESC;
 SELECT h.id, h.place_id, h.creator_id, h.schedule_id, h.title, h.content, h.created_at, h.image_url, h.external_url
 FROM public.holog h
 LEFT JOIN public.bookmark b ON h.id = b.holog_id AND b.user_id = $1
-WHERE h.creator_id_id = $1
+WHERE h.creator_id = $1
   AND h.place_id = $2
   AND h.deleted_at IS NULL
   AND b.type != 'hide'
