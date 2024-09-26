@@ -2,9 +2,11 @@ package api
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -206,22 +208,40 @@ func FetchPlaceDetail(c *fiber.Ctx) error {
 // @Failure 400
 // @Router /place/search [get]
 func SearchPlace(c *fiber.Ctx) error {
-	ctx := context.WithValue(context.Background(), "fiberCtx", c)
+	// ctx := context.WithValue(context.Background(), "fiberCtx", c)
 	base_url := os.Getenv("OPENAPI_SEARCH")
 
 	keyword := c.Params("keyword")
 	// encodedKeyword := url.QueryEscape(keyword)
 	url := base_url + "&numOfRows=8&pageNo=1&keyword=" + keyword
-	log.Print("url: ", url)
-	resp, err := GetRequest(c, ctx, url)
-	if err != nil {
-		log.Printf("Error fetching place list: %v", err)
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+
+	cmd := exec.Command("curl", "-X", "GET", url, "-H", "Content-Type: application/json")
+
+	output, err := cmd.Output()
+    if err != nil {
+        log.Printf("Error fetching place list: %v", err)
+        return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": "Place list not exist",
 		})
-	}
-	log.Printf("resp: %v", resp)
-	parsed := OpenApiParser(c, resp)
+    }
+
+	// resp, err := GetRequest(c, ctx, url)
+	// if err != nil {
+	// 	log.Printf("Error fetching place list: %v", err)
+	// 	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+	// 		"error": "Place list not exist",
+	// 	})
+	// }
+
+	var decode_resp map[string]interface{}
+    if err := json.Unmarshal(output, &decode_resp); err != nil {
+        log.Printf("Failed to unmarshal response: %v", err)
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "error": "Failed to unmarshal response",
+        })
+    }
+
+	parsed := OpenApiParser(c, decode_resp)
 	if parsed == nil {
 		log.Printf("Error parsing data: %v", parsed)
 		return c.JSON([]PlaceRecentResponse{})
