@@ -56,9 +56,10 @@ WHERE id = $1
 RETURNING id, place_id, creator_id, title, content, created_at;
 
 -- name: HideHologByID :one
-UPDATE public.bookmark
-SET type = 'hide'
-WHERE id = $1 AND user_id = $2
+INSERT INTO public.bookmark (id, user_id, holog_id, type)
+VALUES ($1, $2, $3, 'hide')
+ON CONFLICT (user_id, holog_id)
+DO UPDATE SET type = 'hide'
 RETURNING id, user_id, holog_id, type;
 
 -- TODO: TISTORY

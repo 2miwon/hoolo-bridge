@@ -24,9 +24,11 @@ func GetRequest(c *fiber.Ctx, ctx context.Context, url string) (map[string]inter
     
     tr := &http.Transport{
         TLSClientConfig: &tls.Config{
-            MinVersion: tls.VersionTLS12,
-            InsecureSkipVerify: true,
+            MinVersion: tls.VersionTLS10,   // 낮은 버전부터 시도
+            MaxVersion: tls.VersionTLS13,   // 필요한 경우 제한
+            InsecureSkipVerify: true,       // 테스트 목적 (실제 사용 시 false로 설정)
         },
+        ForceAttemptHTTP2: false,           // 필요 시 HTTP/2 강제 비활성화
     }
     client := &http.Client{Transport: tr}
     resp, err := client.Do(req)
