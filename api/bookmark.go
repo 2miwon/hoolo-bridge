@@ -121,3 +121,47 @@ func ListBookmark(c *fiber.Ctx, q *db.Queries) error {
 	return c.JSON(bookmarks)
 }
 
+type CheckBookmarkRequest struct {
+	Valid	bool	`json:"valid"`
+}
+
+// @Summary 북마크 전 일정 등록여부 확인
+// @Description Check bookmark by user id / place id
+// @Tags bookmark
+// @Accept json
+// @Produce json
+// @Param GetBookmarkByUserIDAndHologIDParams body db.GetBookmarkByUserIDAndHologIDParams true "Check Bookmark Request"
+// @Success 200 {object} CheckBookmarkRequest
+// @Failure 404
+// @Failure 400
+// @Router /bookmark/check [post]
+func CheckValidBookmark(c *fiber.Ctx, q *db.Queries) error {
+	ctx := context.WithValue(context.Background(), "fiberCtx", c)
+
+	var req db.GetBookmarkByUserIDAndHologIDParams
+
+	err := utils.ParseRequestBody(c, &req)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request",
+		})
+	}
+
+	valid, err := q.GetBookmarkByUserIDAndHologID(ctx, db.GetBookmarkByUserIDAndHologIDParams{
+		PlaceID: req.PlaceID,
+		UserID: req.UserID,
+	})
+	if err != nil {
+		log.Printf("Error setting bookmark: %v", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to set bookmark",
+		})
+	}
+
+	isValid := valid != 0
+
+	// to return valid
+	return c.JSON(fiber.Map{
+		"valid": isValid,
+	})
+}

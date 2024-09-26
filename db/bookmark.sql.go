@@ -34,6 +34,29 @@ func (q *Queries) DeleteBookmarkByHologId(ctx context.Context, arg DeleteBookmar
 	return i, err
 }
 
+const getBookmarkByUserIDAndHologID = `-- name: GetBookmarkByUserIDAndHologID :one
+SELECT 1
+FROM schedule_detail sd
+JOIN schedule s ON sd.schedule_id = s.id
+JOIN bookmark b ON s.user_id = b.user_id
+JOIN holog h ON sd.place_id = h.place_id AND h.id = b.holog_id
+WHERE s.user_id = $2
+  AND sd.place_id = $1
+LIMIT 1
+`
+
+type GetBookmarkByUserIDAndHologIDParams struct {
+	PlaceID string `json:"place_id"`
+	UserID  string `json:"user_id"`
+}
+
+func (q *Queries) GetBookmarkByUserIDAndHologID(ctx context.Context, arg GetBookmarkByUserIDAndHologIDParams) (int32, error) {
+	row := q.db.QueryRow(ctx, getBookmarkByUserIDAndHologID, arg.PlaceID, arg.UserID)
+	var column_1 int32
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const getBookmarkByUserIDAndPlaceID = `-- name: GetBookmarkByUserIDAndPlaceID :one
 SELECT b.user_id, h.place_id
 FROM public.bookmark b

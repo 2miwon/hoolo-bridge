@@ -219,6 +219,11 @@ func main() {
 		return api.ListBookmark(c, q)
 	})
 
+	app.Post("/bookmark/check" , func(c *fiber.Ctx) error {
+		if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
+		return api.CheckValidBookmark(c, q)
+	})
+
 	// app.Get("/bookmark/list", func(c *fiber.Ctx) error {
 	// 	if !utils.ContextChecker(c) { return errors.New("CONTEXT IS NIL") }
 	// 	return api.FetchBookmarkList(c, q)

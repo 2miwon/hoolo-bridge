@@ -277,6 +277,11 @@ func HideHolog(c *fiber.Ctx, q *db.Queries) error {
 	return c.JSON(hide)
 }
 
+type ListHologsByUserIdPlaceIdRequest struct {
+	UserID string `json:"user_id"`
+	PlaceID string `json:"place_id"`
+}
+
 // @Summary 특정 유저가 생성한 특정 장소의 홀로그 리스트 가져오기
 // @Description Get holog list by user ID and place ID
 // @Tags holog
@@ -290,7 +295,7 @@ func HideHolog(c *fiber.Ctx, q *db.Queries) error {
 func ListHologsByUserIdPlaceId(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
-	var req db.ListHologsByUserIdPlaceIdParams
+	var req ListHologsByUserIdPlaceIdRequest
 
 	err := utils.ParseRequestBody(c, &req)
 	if err != nil {
@@ -300,7 +305,10 @@ func ListHologsByUserIdPlaceId(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
-	list, err := q.ListHologsByUserIdPlaceId(ctx, req)
+	my_list, err := q.ListHologsByUserIdPlaceId(ctx, db.ListHologsByUserIdPlaceIdParams{
+		UserID: req.UserID,
+		PlaceID: req.PlaceID,
+	})
 
 	if err != nil {
 		log.Printf("Error fetching most place list: %v", err)
@@ -309,5 +317,21 @@ func ListHologsByUserIdPlaceId(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
-	return c.JSON(list)
+	bookmark_list, err := q.ListHologsByBookmark(ctx, db.ListHologsByBookmarkParams{
+		UserID: req.UserID,
+		PlaceID: req.PlaceID,
+	})
+
+	if err != nil {
+		log.Printf("Error fetching most place list: %v", err)
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Most place list not exist",
+		})
+	}
+
+	for _, bookmark := range bookmark_list {
+        my_list = append(my_list, db.ListHologsByUserIdPlaceIdRow(bookmark))
+    }
+
+	return c.JSON(my_list)
 }

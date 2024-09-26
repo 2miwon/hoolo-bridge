@@ -156,6 +156,64 @@ func (q *Queries) HideHologByID(ctx context.Context, arg HideHologByIDParams) (B
 	return i, err
 }
 
+const listHologsByBookmark = `-- name: ListHologsByBookmark :many
+SELECT h.id, h.place_id, h.creator_id, h.schedule_id, h.title, h.content, h.created_at, h.image_url, h.external_url
+FROM public.holog h
+JOIN public.bookmark b ON h.id = b.holog_id
+WHERE b.user_id = $1
+  AND h.place_id = $2
+  AND h.deleted_at IS NULL
+  AND (b.type IS NULL OR b.type != 'hide')
+ORDER BY h.created_at DESC
+`
+
+type ListHologsByBookmarkParams struct {
+	UserID  string `json:"user_id"`
+	PlaceID string `json:"place_id"`
+}
+
+type ListHologsByBookmarkRow struct {
+	ID          uuid.UUID   `json:"id"`
+	PlaceID     string      `json:"place_id"`
+	CreatorID   string      `json:"creator_id"`
+	ScheduleID  pgtype.UUID `json:"schedule_id"`
+	Title       string      `json:"title"`
+	Content     string      `json:"content"`
+	CreatedAt   null.Time   `json:"created_at"`
+	ImageUrl    *string     `json:"image_url"`
+	ExternalUrl *string     `json:"external_url"`
+}
+
+func (q *Queries) ListHologsByBookmark(ctx context.Context, arg ListHologsByBookmarkParams) ([]ListHologsByBookmarkRow, error) {
+	rows, err := q.db.Query(ctx, listHologsByBookmark, arg.UserID, arg.PlaceID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListHologsByBookmarkRow{}
+	for rows.Next() {
+		var i ListHologsByBookmarkRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.PlaceID,
+			&i.CreatorID,
+			&i.ScheduleID,
+			&i.Title,
+			&i.Content,
+			&i.CreatedAt,
+			&i.ImageUrl,
+			&i.ExternalUrl,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listHologsByPlaceId = `-- name: ListHologsByPlaceId :many
 SELECT h.id, h.place_id, h.creator_id, h.schedule_id, h.title, h.content, h.created_at, h.image_url, h.external_url
 FROM public.holog h
