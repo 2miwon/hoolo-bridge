@@ -54,6 +54,7 @@ type ScheduleDetail struct {
 	ID         uuid.UUID `json:"id"`
 	ScheduleID uuid.UUID `json:"schedule_id"`
 	PlaceID    string    `json:"place_id"`
+	DeletedAt  null.Time `json:"deleted_at"`
 }
 
 type User struct {

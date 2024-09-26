@@ -22,9 +22,15 @@ type CreateScheduleDetailParams struct {
 	PlaceID    string    `json:"place_id"`
 }
 
-func (q *Queries) CreateScheduleDetail(ctx context.Context, arg CreateScheduleDetailParams) (ScheduleDetail, error) {
+type CreateScheduleDetailRow struct {
+	ID         uuid.UUID `json:"id"`
+	ScheduleID uuid.UUID `json:"schedule_id"`
+	PlaceID    string    `json:"place_id"`
+}
+
+func (q *Queries) CreateScheduleDetail(ctx context.Context, arg CreateScheduleDetailParams) (CreateScheduleDetailRow, error) {
 	row := q.db.QueryRow(ctx, createScheduleDetail, arg.ScheduleID, arg.PlaceID)
-	var i ScheduleDetail
+	var i CreateScheduleDetailRow
 	err := row.Scan(&i.ID, &i.ScheduleID, &i.PlaceID)
 	return i, err
 }
@@ -41,9 +47,15 @@ type DeleteScheduleDetailParams struct {
 	PlaceID    string    `json:"place_id"`
 }
 
-func (q *Queries) DeleteScheduleDetail(ctx context.Context, arg DeleteScheduleDetailParams) (ScheduleDetail, error) {
+type DeleteScheduleDetailRow struct {
+	ID         uuid.UUID `json:"id"`
+	ScheduleID uuid.UUID `json:"schedule_id"`
+	PlaceID    string    `json:"place_id"`
+}
+
+func (q *Queries) DeleteScheduleDetail(ctx context.Context, arg DeleteScheduleDetailParams) (DeleteScheduleDetailRow, error) {
 	row := q.db.QueryRow(ctx, deleteScheduleDetail, arg.ScheduleID, arg.PlaceID)
-	var i ScheduleDetail
+	var i DeleteScheduleDetailRow
 	err := row.Scan(&i.ID, &i.ScheduleID, &i.PlaceID)
 	return i, err
 }
@@ -54,15 +66,21 @@ FROM public.schedule_detail
 WHERE schedule_id = $1 AND deleted_at IS NULL
 `
 
-func (q *Queries) GetMyScheduleDetailsByScheduleId(ctx context.Context, scheduleID uuid.UUID) ([]ScheduleDetail, error) {
+type GetMyScheduleDetailsByScheduleIdRow struct {
+	ID         uuid.UUID `json:"id"`
+	ScheduleID uuid.UUID `json:"schedule_id"`
+	PlaceID    string    `json:"place_id"`
+}
+
+func (q *Queries) GetMyScheduleDetailsByScheduleId(ctx context.Context, scheduleID uuid.UUID) ([]GetMyScheduleDetailsByScheduleIdRow, error) {
 	rows, err := q.db.Query(ctx, getMyScheduleDetailsByScheduleId, scheduleID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ScheduleDetail{}
+	items := []GetMyScheduleDetailsByScheduleIdRow{}
 	for rows.Next() {
-		var i ScheduleDetail
+		var i GetMyScheduleDetailsByScheduleIdRow
 		if err := rows.Scan(&i.ID, &i.ScheduleID, &i.PlaceID); err != nil {
 			return nil, err
 		}
@@ -85,15 +103,21 @@ type GetScheduleDetailByScheduleIdAndPlaceIdParams struct {
 	PlaceID    string    `json:"place_id"`
 }
 
-func (q *Queries) GetScheduleDetailByScheduleIdAndPlaceId(ctx context.Context, arg GetScheduleDetailByScheduleIdAndPlaceIdParams) ([]ScheduleDetail, error) {
+type GetScheduleDetailByScheduleIdAndPlaceIdRow struct {
+	ID         uuid.UUID `json:"id"`
+	ScheduleID uuid.UUID `json:"schedule_id"`
+	PlaceID    string    `json:"place_id"`
+}
+
+func (q *Queries) GetScheduleDetailByScheduleIdAndPlaceId(ctx context.Context, arg GetScheduleDetailByScheduleIdAndPlaceIdParams) ([]GetScheduleDetailByScheduleIdAndPlaceIdRow, error) {
 	rows, err := q.db.Query(ctx, getScheduleDetailByScheduleIdAndPlaceId, arg.ScheduleID, arg.PlaceID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ScheduleDetail{}
+	items := []GetScheduleDetailByScheduleIdAndPlaceIdRow{}
 	for rows.Next() {
-		var i ScheduleDetail
+		var i GetScheduleDetailByScheduleIdAndPlaceIdRow
 		if err := rows.Scan(&i.ID, &i.ScheduleID, &i.PlaceID); err != nil {
 			return nil, err
 		}

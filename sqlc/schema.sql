@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS public.schedule_detail (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     schedule_id UUID NOT NULL,
     place_id TEXT NOT NULL,
+    deleted_at TIMESTAMPTZ,
     FOREIGN KEY (schedule_id) REFERENCES public.schedule(id)
 );
 

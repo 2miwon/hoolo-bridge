@@ -81,12 +81,17 @@ func GetScheduleDetailByPlaceID(c *fiber.Ctx, q *db.Queries) error {
 	return c.JSON(res)
 }
 
+type CreateScheduleDetailRequest struct {
+	ScheduleID string `json:"schedule_id"`
+	PlaceID string `json:"place_id"`
+}
+
 // @Summary 스케줄 상세장소 생성
 // @Description Create schedule detail
 // @Tags schedule
 // @Accept json
 // @Produce json
-// @Param db.CreateScheduleDetailParams body db.CreateScheduleDetailParams true "Create Schedule Detail Request"
+// @Param CreateScheduleDetailRequest body CreateScheduleDetailRequest true "Create Schedule Detail Request"
 // @Success 200 {object} db.ScheduleDetail
 // @Failure 400
 // @Failure 500
@@ -94,7 +99,7 @@ func GetScheduleDetailByPlaceID(c *fiber.Ctx, q *db.Queries) error {
 func CreateScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
-	var req db.CreateScheduleDetailParams
+	var req CreateScheduleDetailRequest
 
 	err := utils.ParseRequestBody(c, &req)
 	if err != nil {
@@ -104,7 +109,12 @@ func CreateScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
-	res, err := q.CreateScheduleDetail(ctx, req)
+	var rst = db.CreateScheduleDetailParams{
+		ScheduleID: uuid.MustParse(req.ScheduleID),
+		PlaceID: req.PlaceID,
+	}
+
+	res, err := q.CreateScheduleDetail(ctx, rst)
 	if err != nil {
 		log.Printf("Error creating schedule detail: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -115,12 +125,17 @@ func CreateScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 	return c.JSON(res)
 }
 
+type DeleteScheduleDetailRequest struct {
+	ScheduleID string `json:"schedule_id"`
+	PlaceID string `json:"place_id"`
+}
+
 // @Summary 스케줄 상세장소 삭제
 // @Description Delete schedule detail
 // @Tags schedule
 // @Accept json
 // @Produce json
-// @Param db.DeleteScheduleDetailParams body db.DeleteScheduleDetailParams true "Delete Schedule Detail Request"
+// @Param DeleteScheduleDetailRequest body DeleteScheduleDetailRequest true "Delete Schedule Detail Request"
 // @Success 200 {object} db.ScheduleDetail
 // @Failure 400
 // @Failure 500
@@ -128,7 +143,7 @@ func CreateScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 func DeleteScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
-	var req db.DeleteScheduleDetailParams
+	var req DeleteScheduleDetailRequest
 
 	err := utils.ParseRequestBody(c, &req)
 	if err != nil {
@@ -138,7 +153,12 @@ func DeleteScheduleDetail(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
-	res, err := q.DeleteScheduleDetail(ctx, req)
+	var rst = db.DeleteScheduleDetailParams{
+		ScheduleID: uuid.MustParse(req.ScheduleID),
+		PlaceID: req.PlaceID,
+	}
+
+	res, err := q.DeleteScheduleDetail(ctx, rst)
 	if err != nil {
 		log.Printf("Error deleting schedule detail: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
