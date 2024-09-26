@@ -117,16 +117,8 @@ func FetchRelatePlaceList(c *fiber.Ctx, q *db.Queries) error {
 			"error": "Most place list not exist",
 		})
 	}
-	
-	jsonData, err := json.Marshal(list)
-    if err != nil {
-        log.Printf("Error marshalling list to JSON: %v", err)
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "error": "Failed to convert list to JSON",
-        })
-    }
 
-	log.Printf("FetchRelatePlaceList list: %v", jsonData)
+	log.Printf("FetchRelatePlaceList list: %v", c.JSON(list))
 	return c.JSON(list)
 }
 
