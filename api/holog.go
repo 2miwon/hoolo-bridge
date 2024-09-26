@@ -246,9 +246,6 @@ type HideHologRequest struct {
 func HideHolog(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
-	// logging row request
-	log.Printf("request body: %v", string(c.Body()))
-
 	var req HideHologRequest
 
 	err := utils.ParseRequestBody(c, &req)

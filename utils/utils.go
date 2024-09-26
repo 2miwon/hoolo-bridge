@@ -28,12 +28,13 @@ func ContextChecker(c *fiber.Ctx) bool {
 }
 
 func ParseRequestBody(c *fiber.Ctx, req interface{}) error {
+	log.Printf("request body: %v", string(c.Body()))
     if err := c.BodyParser(req); err != nil {
         return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
             "error": "Invalid request body",
         })
     }
-	log.Printf("request body: %v", req)
+	// log.Printf("request body: %v", req)
     return nil
 }
 
