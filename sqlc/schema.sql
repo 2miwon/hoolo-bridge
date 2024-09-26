@@ -66,7 +66,8 @@ CREATE TABLE IF NOT EXISTS public.bookmark (
     type TEXT NOT NULL DEFAULT 'common', -- common / hide / save 
 
     FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE,
-    FOREIGN KEY (holog_id) REFERENCES public.holog(id) ON DELETE CASCADE
+    FOREIGN KEY (holog_id) REFERENCES public.holog(id) ON DELETE CASCADE,
+    CONSTRAINT unique_user_holog UNIQUE (user_id, holog_id)
 );
 
 -- CREATE TABLE IF NOT EXISTS public.narration_style (

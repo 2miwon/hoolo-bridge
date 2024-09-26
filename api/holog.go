@@ -227,12 +227,17 @@ func DeleteHolog(c *fiber.Ctx, q *db.Queries) error {
 	return c.JSON(holog)
 }
 
+type HideHologRequest struct {
+	HologID string `json:"holog_id"`
+	UserID string `json:"user_id"`
+}
+
 // @Summary 홀로그 숨기기
 // @Description Hide a holog
 // @Tags holog
 // @Accept json
 // @Produce json
-// @Param HideHologByIDParams body db.HideHologByIDParams true "HideHolog Request"
+// @Param HideHologRequest body HideHologRequest true "HideHolog Request"
 // @Success 200 {object} db.Bookmark
 // @Failure 404
 // @Failure 400
@@ -240,7 +245,7 @@ func DeleteHolog(c *fiber.Ctx, q *db.Queries) error {
 func HideHolog(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
-	var req db.HideHologByIDParams
+	var req HideHologRequest
 
 	err := utils.ParseRequestBody(c, &req)
 	if err != nil {
@@ -250,7 +255,18 @@ func HideHolog(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
-	hide, err := q.HideHologByID(ctx, req)
+	holog_id, err := uuid.Parse(req.HologID)
+	if err != nil {
+		log.Printf("Invalid holog ID format: %v", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid holog ID format",
+		})
+	}
+
+	hide, err := q.HideHologByID(ctx, db.HideHologByIDParams{
+			HologID: holog_id,
+			UserID: req.UserID,
+	})
 	if err != nil {
 		log.Printf("Error hiding holog: %v", err)
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
