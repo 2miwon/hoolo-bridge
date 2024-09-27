@@ -29,7 +29,7 @@ type Querier interface {
 	HardDeleteUserByID(ctx context.Context, id string) (HardDeleteUserByIDRow, error)
 	HideHologByID(ctx context.Context, arg HideHologByIDParams) (Bookmark, error)
 	ListAnnounces(ctx context.Context) ([]ListAnnouncesRow, error)
-	ListHologsByBookmark(ctx context.Context, arg ListHologsByBookmarkParams) ([]ListHologsByBookmarkRow, error)
+	ListHologsByBookmark(ctx context.Context, userID string) ([]ListHologsByBookmarkRow, error)
 	ListHologsByPlaceId(ctx context.Context, arg ListHologsByPlaceIdParams) ([]ListHologsByPlaceIdRow, error)
 	ListHologsByUserID(ctx context.Context, userID string) ([]ListHologsByUserIDRow, error)
 	ListHologsByUserIdPlaceId(ctx context.Context, arg ListHologsByUserIdPlaceIdParams) ([]ListHologsByUserIdPlaceIdRow, error)

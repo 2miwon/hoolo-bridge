@@ -318,10 +318,7 @@ func ListHologsByUserIdPlaceId(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
-	bookmark_list, err := q.ListHologsByBookmark(ctx, db.ListHologsByBookmarkParams{
-		UserID: req.UserID,
-		PlaceID: req.PlaceID,
-	})
+	bookmarked_list, err := q.ListHologsByBookmark(ctx, req.UserID)
 
 	if err != nil {
 		log.Printf("Error fetching most place list: %v", err)
@@ -330,7 +327,7 @@ func ListHologsByUserIdPlaceId(c *fiber.Ctx, q *db.Queries) error {
 		})
 	}
 
-	for _, bookmark := range bookmark_list {
+	for _, bookmark := range bookmarked_list {
         my_list = append(my_list, db.ListHologsByUserIdPlaceIdRow(bookmark))
     }
 

@@ -54,7 +54,6 @@ SELECT h.id, h.place_id, h.creator_id, h.schedule_id, h.title, h.content, h.crea
 FROM public.holog h
 JOIN public.bookmark b ON h.id = b.holog_id
 WHERE b.user_id = $1
-  AND h.place_id = $2
   AND h.deleted_at IS NULL
   AND (b.type IS NULL OR b.type != 'hide')
 ORDER BY h.created_at DESC;
