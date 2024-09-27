@@ -165,7 +165,7 @@ func CreateHolog(c *fiber.Ctx, q *db.Queries) error {
 // @Success 200 {object} []db.ListHologsByUserIDRow
 // @Failure 404
 // @Failure 400
-// @Router /holog/user/ [post]
+// @Router /holog/:user_id [get]
 func ListHologsByUserID(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 

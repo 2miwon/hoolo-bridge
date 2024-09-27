@@ -94,7 +94,7 @@ func UnsetBookmark(c *fiber.Ctx, q *db.Queries) error {
 // @Success 200 {object} []db.GetBookmarkByUserIDAndPlaceIDRow
 // @Failure 404
 // @Failure 400
-// @Router /bookmark/list [get]
+// @Router /bookmark/list [post]
 func ListBookmark(c *fiber.Ctx, q *db.Queries) error {
 	ctx := context.WithValue(context.Background(), "fiberCtx", c)
 
