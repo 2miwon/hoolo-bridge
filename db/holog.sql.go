@@ -161,10 +161,16 @@ SELECT h.id, h.place_id, h.creator_id, h.schedule_id, h.title, h.content, h.crea
 FROM public.holog h
 JOIN public.bookmark b ON h.id = b.holog_id
 WHERE b.user_id = $1
+  AND h.place_id = $2
   AND h.deleted_at IS NULL
   AND (b.type IS NULL OR b.type != 'hide')
 ORDER BY h.created_at DESC
 `
+
+type ListHologsByBookmarkParams struct {
+	UserID  string `json:"user_id"`
+	PlaceID string `json:"place_id"`
+}
 
 type ListHologsByBookmarkRow struct {
 	ID          uuid.UUID   `json:"id"`
@@ -178,8 +184,8 @@ type ListHologsByBookmarkRow struct {
 	ExternalUrl *string     `json:"external_url"`
 }
 
-func (q *Queries) ListHologsByBookmark(ctx context.Context, userID string) ([]ListHologsByBookmarkRow, error) {
-	rows, err := q.db.Query(ctx, listHologsByBookmark, userID)
+func (q *Queries) ListHologsByBookmark(ctx context.Context, arg ListHologsByBookmarkParams) ([]ListHologsByBookmarkRow, error) {
+	rows, err := q.db.Query(ctx, listHologsByBookmark, arg.UserID, arg.PlaceID)
 	if err != nil {
 		return nil, err
 	}
