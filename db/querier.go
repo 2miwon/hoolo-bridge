@@ -34,6 +34,7 @@ type Querier interface {
 	ListHologsByUserID(ctx context.Context, userID string) ([]ListHologsByUserIDRow, error)
 	ListHologsByUserIdPlaceId(ctx context.Context, arg ListHologsByUserIdPlaceIdParams) ([]ListHologsByUserIdPlaceIdRow, error)
 	ListHologsMostByWeek(ctx context.Context) ([]ListHologsMostByWeekRow, error)
+	ListHologsMyBookmark(ctx context.Context, userID string) ([]ListHologsMyBookmarkRow, error)
 	SetBookmarkByHologId(ctx context.Context, arg SetBookmarkByHologIdParams) (SetBookmarkByHologIdRow, error)
 	SoftDeleteUserByID(ctx context.Context, id string) (SoftDeleteUserByIDRow, error)
 	UpdateSchedule(ctx context.Context, arg UpdateScheduleParams) (UpdateScheduleRow, error)
